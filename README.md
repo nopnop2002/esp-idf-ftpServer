@@ -32,8 +32,8 @@ PASSWORD of your wifi.
 - CONFIG_ESP_MAXIMUM_RETRY   
 Maximum number of retries when connecting to wifi.   
 - CONFIG_STATIC_IP   
-- CONFIG_STATIC_IP_ADDRESS
-- CONFIG_STATIC_GW_ADDRESS
+- CONFIG_STATIC_IP_ADDRESS   
+- CONFIG_STATIC_GW_ADDRESS   
 Enable Static IP Address.   
 - CONFIG_NTP_SERVER   
 - CONFIG_LOCAL_TIMEZONE   
