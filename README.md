@@ -9,7 +9,7 @@ git clone https://github.com/nopnop2002/esp-idf-ftpServer
 cd esp-idf-ftpServer/
 idf.py set-target esp32
 idf.py menuconfig
-idf.py flash
+idf.py flash monitor
 ```
 
 # Installation for ESP32-S2
@@ -19,7 +19,7 @@ git clone https://github.com/nopnop2002/esp-idf-ftpServer
 cd esp-idf-ftpServer/
 idf.py set-target esp32s2
 idf.py menuconfig
-idf.py flash
+idf.py flash monitor
 ```
 # Configure
 You have to set this config value with menuconfig.   
