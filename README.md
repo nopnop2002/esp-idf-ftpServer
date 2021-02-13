@@ -40,7 +40,7 @@ Enable Static IP Address.
 Hostname for NTP Server.
 This server manages file timestamps in GMT.   
 - CONFIG_MDNS_HOSTNAME   
-MDNS of FTP Server.
+MDNS of FTP Server.You can connect with mDNS.local.   
 - CONFIG_FTP_USER   
 Username of FTP Server.
 - CONFIG_FTP_PASSWORD   
