@@ -135,7 +135,7 @@ When adding a pullup to this pin for SD card operation, consider the following:
    * PWD
    * XPWD(Same as PWD)
    * SIZE
-   * MDTM
+   * MDTM(Always GMT)
    * TYPE
    * USER
    * PASS
