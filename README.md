@@ -125,6 +125,34 @@ When adding a pullup to this pin for SD card operation, consider the following:
     * In most cases, external pullup can be omitted and an internal pullup can be enabled using a `gpio_pullup_en(GPIO_NUM_12);` call. Most SD cards work fine when an internal pullup on GPIO12 line is enabled. Note that if ESP32 experiences a power-on reset while the SD card is sending data, high level on GPIO12 can be latched into the bootstrapping register, and ESP32 will enter a boot loop until external reset with correct GPIO12 level is applied.
     * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
 
+# Limitation   
+- The server does not support multiple connections.   
+- The server does not support active connection.
+- The server can only process these commands.
+   * SYST
+   * CDUP
+   * CWD
+   * PWD
+   * XPWD(Same as PWD)
+   * SIZE
+   * MDTM
+   * TYPE
+   * USER
+   * PASS
+   * PASV
+   * LIST
+   * RETR
+   * STOR
+   * DELE
+   * RMD
+   * MKD
+   * RNFR(Rename From)
+   * RNTO(Rename To)
+   * NOOP
+   * QUIT
+   * APPE
+   * NLST
+
 # Screen Shot   
 ![ftp-srver-1](https://user-images.githubusercontent.com/6020549/107848056-fb186700-6e33-11eb-814a-63944a1ca486.jpg)
 ![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
