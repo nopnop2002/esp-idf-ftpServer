@@ -21,6 +21,67 @@ menu "FTP Server Configuration"
 				Use FAT File System on MMC SDCARD.
 	endchoice
 
+	config MISO_GPIO
+		depends on SPI_SDCARD
+		int "MISO GPIO number"
+		range 0 46
+		default 2 if IDF_TARGET_ESP32
+		default 13 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI MISO.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MISO.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+   config MOSI_GPIO
+		depends on SPI_SDCARD
+		int "MOSI GPIO number"
+		range 0 46
+		default 15 if IDF_TARGET_ESP32
+		default 11 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI MOSI.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+   config SCLK_GPIO
+		depends on SPI_SDCARD
+		int "SCLK GPIO number"
+		range 0 46
+		default 14 if IDF_TARGET_ESP32
+		default 12 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI SCLK.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to SCLK.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+   config CS_GPIO
+		depends on SPI_SDCARD
+		int "CS GPIO number"
+		range 0 46
+		default 13 if IDF_TARGET_ESP32
+		default 10 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI CS.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
+   config POWER_GPIO
+		depends on SPI_SDCARD
+		int "POWER GPIO number"
+		range -1 46
+		default -1 if IDF_TARGET_ESP32
+		default 14 if IDF_TARGET_ESP32S2
+		help
+			GPIO number (IOxx) to SPI POWER.
+			When it is -1, the POWER isn't performed.
+			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to POWER.
+			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
+			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+
 	comment "for WiFi Setting"
 
 	config ESP_WIFI_SSID

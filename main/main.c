@@ -52,10 +52,17 @@ static EventGroupHandle_t s_wifi_event_group;
 // Pin mapping when using SPI mode.
 // With this mapping, SD card can be used both in SPI and 1-line SD mode.
 // Note that a pull-up on CS line is required in SD mode.
+#if 0
 #define PIN_NUM_MISO	2
 #define PIN_NUM_MOSI	15
-#define PIN_NUM_CLK		14
+#define PIN_NUM_SCLK	14
 #define PIN_NUM_CS		13
+#endif
+#define PIN_NUM_MISO	CONFIG_MISO_GPIO
+#define PIN_NUM_MOSI	CONFIG_MOSI_GPIO
+#define PIN_NUM_SCLK	CONFIG_SCLK_GPIO
+#define PIN_NUM_CS		CONFIG_CS_GPIO
+#define PIN_POWER		CONFIG_POWER_GPIO
 #endif 
 
 static int s_retry_num = 0;
@@ -318,7 +325,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	spi_bus_config_t bus_cfg = {
 		.mosi_io_num = PIN_NUM_MOSI,
 		.miso_io_num = PIN_NUM_MISO,
-		.sclk_io_num = PIN_NUM_CLK,
+		.sclk_io_num = PIN_NUM_SCLK,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
@@ -453,6 +460,16 @@ void app_main(void)
 #endif 
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
+
+	if (PIN_POWER != -1) {
+		gpio_pad_select_gpio(PIN_POWER);
+		/* Set the GPIO as a push/pull output */
+		gpio_set_direction(PIN_POWER, GPIO_MODE_OUTPUT);
+		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", PIN_POWER);
+		gpio_set_level(PIN_POWER, 1);
+		vTaskDelay(3000 / portTICK_PERIOD_MS);
+	}
+	
 	sdmmc_card_t card;
 	ret = mountSDCARD(MOUNT_POINT, &card);
 	if (ret != ESP_OK) return;
