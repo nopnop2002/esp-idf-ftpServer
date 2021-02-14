@@ -158,13 +158,14 @@ The LilyGo ESP32-S2 development board has a micro SD card slot on the board.
 It is connected to the ESP32 by SPI, and the peripheral power is supplied from GPIO14.   
 With this, you can easily build an FRP server.   
 __No equipment other than the development board is required.__   
+It works very stably.   
 
 ![LilyGo-esp32-s2-1](https://user-images.githubusercontent.com/6020549/107864770-00f96100-6ea3-11eb-8549-6885ae398111.JPG)
 
 ![LilyGo-esp32-s2-2](https://user-images.githubusercontent.com/6020549/107864771-03f45180-6ea3-11eb-8dda-283e7a1407ab.jpg)
 
 # Screen Shot   
-![ftp-srver-1](https://user-images.githubusercontent.com/6020549/107848056-fb186700-6e33-11eb-814a-63944a1ca486.jpg)
+![ftp-srver-1](https://user-images.githubusercontent.com/6020549/107865100-9d713280-6ea6-11eb-94d2-4a249bd36a7b.jpg)
 ![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
 
 
