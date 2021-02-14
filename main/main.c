@@ -411,7 +411,7 @@ void ftp_task (void *pvParameters);
 
 void app_main(void)
 {
-	//Initialize NVS
+	// Initialize NVS
 	esp_err_t ret;
 	ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -425,6 +425,8 @@ void app_main(void)
 		ESP_LOGE(TAG, "Connection failed");
 		while(1) { vTaskDelay(1); }
 	}
+
+	// Initialize mDNS
 	initialise_mdns();
 	tcpip_adapter_ip_info_t ip_info;
 	ESP_ERROR_CHECK(tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info));
@@ -453,6 +455,7 @@ void app_main(void)
 	ESP_LOGI(TAG, "The local date/time is: %s", strftime_buf);
 	ESP_LOGW(TAG, "This server manages file timestamps in GMT.");
 
+	// Mount FAT file system
 #if CONFIG_FATFS
 	char *partition_label = "storage";
 	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
@@ -475,18 +478,17 @@ void app_main(void)
 	if (ret != ESP_OK) return;
 #endif 
 
+	// Create FTP server task
 	xEventTask = xEventGroupCreate();
 	xTaskCreate(ftp_task, "FTP", 1024*6, NULL, 2, NULL);
-	while(1) {
-		xEventGroupWaitBits( xEventTask,
-			FTP_TASK_FINISH_BIT,			/* The bits within the event group to wait for. */
-			pdTRUE,		   /* BIT_0 should be cleared before returning. */
-			pdFALSE,	   /* Don't wait for both bits, either bit will do. */
-			portMAX_DELAY);/* Wait forever. */
-		ESP_LOGE(TAG, "ftp_task finish");
-		break;
-	}
+	xEventGroupWaitBits( xEventTask,
+		FTP_TASK_FINISH_BIT,			/* The bits within the event group to wait for. */
+		pdTRUE,		   /* BIT_0 should be cleared before returning. */
+		pdFALSE,	   /* Don't wait for both bits, either bit will do. */
+		portMAX_DELAY);/* Wait forever. */
+	ESP_LOGE(TAG, "ftp_task finish");
 
+	// Unmount FAT file system
 #if CONFIG_FATFS
 	esp_vfs_fat_spiflash_unmount(MOUNT_POINT, s_wl_handle);
 	ESP_LOGI(TAG, "FATFS unmounted");
