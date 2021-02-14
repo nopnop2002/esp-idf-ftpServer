@@ -41,6 +41,7 @@ Hostname for NTP Server and your timezone.
 This server manages file timestamps in GMT.   
 - CONFIG_MDNS_HOSTNAME   
 MDNS of FTP Server.You can connect with mDNS.local.   
+You need to change the mDNS strict mode according to [this](https://github.com/espressif/esp-idf/issues/6190) instruction.   
 - CONFIG_FTP_USER   
 Username of FTP Server.
 - CONFIG_FTP_PASSWORD   
