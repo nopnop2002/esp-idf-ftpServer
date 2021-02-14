@@ -169,5 +169,6 @@ __No equipment other than the development board is required.__
 
 
 # Troubleshooting   
+I sometimes get this error when using external SPI SD card readers.   
 Requires a PullUp resistor.   
 ![sd-card-1](https://user-images.githubusercontent.com/6020549/107848058-fe135780-6e33-11eb-9eac-7ce160571276.jpg)
