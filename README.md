@@ -59,6 +59,7 @@ You can select any one using menuconfig.
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD   
 
+Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
 
 # Using FAT file system on SPI peripheral SDCARD
 __Must be formatted with FAT32 before use__
