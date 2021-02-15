@@ -158,7 +158,7 @@ When adding a pullup to this pin for SD card operation, consider the following:
 # Using LilyGo ESP32-S2
 The LilyGo ESP32-S2 development board has a micro SD card slot on the board.   
 It is connected to the ESP32 by SPI, and the peripheral power is supplied from GPIO14.   
-With this, you can easily build an FRP server.   
+With this, you can easily build an FTP server.   
 __No equipment other than the development board is required.__   
 It works very stably.   
 
