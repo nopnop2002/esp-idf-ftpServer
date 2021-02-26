@@ -38,7 +38,7 @@ Maximum number of retries when connecting to wifi.
 Enable Static IP Address.   
 - CONFIG_NTP_SERVER   
 - CONFIG_LOCAL_TIMEZONE   
-Hostname for NTP Server and your timezone.
+Hostname for NTP Server and your timezone.   
 This server manages file timestamps in GMT.   
 - CONFIG_MDNS_HOSTNAME   
 MDNS of FTP Server.   
