@@ -172,6 +172,11 @@ It works very stably.
 ![ftp-srver-1](https://user-images.githubusercontent.com/6020549/107865100-9d713280-6ea6-11eb-94d2-4a249bd36a7b.jpg)
 ![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
 
+# Windows ftp client
+I tested these client.
+- WinSCP
+- FileZilla
+- FFFTP
 
 # Troubleshooting   
 I sometimes get this error when using external SPI SD card readers.   
