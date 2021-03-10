@@ -175,9 +175,14 @@ It works very stably.
 # Windows ftp client
 I tested these client.   
 __You need to set the connection type to Passive Mode.__   
-- WinSCP
-- FileZilla
-- FFFTP
+- WinSCP   
+![WinSCP](https://user-images.githubusercontent.com/6020549/110587152-9d6b0680-81b6-11eb-857d-31d87379a3b1.jpg)
+
+- FileZilla   
+![FileZilla](https://user-images.githubusercontent.com/6020549/110587823-795bf500-81b7-11eb-8dcb-eeb6e096e9f6.jpg)
+
+- FFFTP   
+![FFFTP](https://user-images.githubusercontent.com/6020549/110587181-ab208c00-81b6-11eb-9c41-95e3e1d67949.jpg)
 
 # Troubleshooting   
 I sometimes get this error when using external SPI SD card readers.   
