@@ -131,7 +131,7 @@ When adding a pullup to this pin for SD card operation, consider the following:
 
 # Limitations   
 - The server does not support multiple connections.   
-- The server does not support active connection.
+- The server does not support active connection. Only passive connection.   
 - The server can only process these commands.
    * SYST
    * CDUP
@@ -173,7 +173,8 @@ It works very stably.
 ![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
 
 # Windows ftp client
-I tested these client.
+I tested these client.   
+__You need to set the connection type to Passive Mode.__   
 - WinSCP
 - FileZilla
 - FFFTP
