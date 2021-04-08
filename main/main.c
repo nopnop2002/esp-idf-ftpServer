@@ -462,8 +462,7 @@ void app_main(void)
 	if (s_wl_handle < 0) return;
 #endif 
 
-#if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
-
+#if CONFIG_SPI_SDCARD
 	if (PIN_POWER != -1) {
 		gpio_pad_select_gpio(PIN_POWER);
 		/* Set the GPIO as a push/pull output */
@@ -472,7 +471,9 @@ void app_main(void)
 		gpio_set_level(PIN_POWER, 1);
 		vTaskDelay(3000 / portTICK_PERIOD_MS);
 	}
+#endif
 	
+#if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 	sdmmc_card_t card;
 	ret = mountSDCARD(MOUNT_POINT, &card);
 	if (ret != ESP_OK) return;
