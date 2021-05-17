@@ -1387,8 +1387,8 @@ int32_t ftp_get_maxstack (void) {
 //-------------------------------
 void ftp_task (void *pvParameters)
 {
-	esp_log_level_set(FTP_TAG, ESP_LOG_WARN); 
 	ESP_LOGI(FTP_TAG, "ftp_task start");
+	esp_log_level_set(FTP_TAG, ESP_LOG_WARN); 
 	strcpy(ftp_user, CONFIG_FTP_USER);
 	strcpy(ftp_pass, CONFIG_FTP_PASSWORD);
 	ESP_LOGI(FTP_TAG, "ftp_user:[%s] ftp_pass:[%s]", ftp_user, ftp_pass);
@@ -1423,7 +1423,7 @@ void ftp_task (void *pvParameters)
 
 	} // end while
 
-	ESP_LOGI("[Ftp]", "\nTask terminated!");
+	ESP_LOGW("[Ftp]", "\nTask terminated!");
 	xEventGroupSetBits(xEventTask, FTP_TASK_FINISH_BIT);
 	vTaskDelete(NULL);
 }
