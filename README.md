@@ -4,6 +4,10 @@ I found [this](https://www.esp32.com/viewtopic.php?f=13&t=5013#p21738) informati
 So, I ported from [here](https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/libs/ftp.c).   
 Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
 
+# Software requirements
+esp-idf v4.4 or later.   
+The mDNS strict mode [issue](https://github.com/espressif/esp-idf/issues/6190) has been resolved.   
+
 # Installation for ESP32
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpServer
@@ -43,7 +47,6 @@ This server manages file timestamps in GMT.
 - CONFIG_MDNS_HOSTNAME   
 MDNS of FTP Server.   
 You can connect with mDNS.local.   
-You need to change the mDNS strict mode according to [this](https://github.com/espressif/esp-idf/issues/6190) instruction.   
 - CONFIG_FTP_USER   
 Username of FTP Server.
 - CONFIG_FTP_PASSWORD   
