@@ -129,7 +129,7 @@ When adding a pullup to this pin for SD card operation, consider the following:
 
 # Limitations   
 - The server does not support multiple connections.   
-- The server does not support active connection. Only passive connection.   
+- The server does not support active connection. __Only passive connection.__   
 - The server can only process these commands.
    * SYST
    * CDUP
