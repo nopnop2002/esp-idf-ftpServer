@@ -32,16 +32,17 @@ You have to set this config value with menuconfig.
 ![config-main](https://user-images.githubusercontent.com/6020549/107847756-a4aa2900-6e31-11eb-9525-6fd82bead5a3.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/127939325-1b565ef7-9045-4800-95ad-0153342b5fc1.jpg)
 
-## File System Sekection
+## File System Selection
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
-- FAT file system on FLASH   
+
+### FAT file system on FLASH   
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/127939717-05ffd887-1b50-4912-bd8b-9386098eca35.jpg)
 
-- FAT file system on SPI peripheral SDCARD   
+### FAT file system on SPI peripheral SDCARD   
 ![config-filesystem-2](https://user-images.githubusercontent.com/6020549/127939720-10306987-22d0-414a-9e3b-1fe39dc88eb6.jpg)
 
-- FAT file system on SDMMC peripheral SDCARD   
+### FAT file system on SDMMC peripheral SDCARD   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/127939723-db3da4d8-40fb-49ac-81e2-7c86f7163d81.jpg)
 
 Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
