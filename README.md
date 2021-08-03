@@ -163,8 +163,7 @@ __No equipment other than the development board is required.__
 It works very stably.   
 
 ![LilyGo-esp32-s2-1](https://user-images.githubusercontent.com/6020549/107864770-00f96100-6ea3-11eb-8549-6885ae398111.JPG)
-
-![LilyGo-esp32-s2-2](https://user-images.githubusercontent.com/6020549/107864771-03f45180-6ea3-11eb-8dda-283e7a1407ab.jpg)
+![LilyGo-esp32-s2-2](https://user-images.githubusercontent.com/6020549/127941181-63e48570-88ab-4d5b-8be7-343168079c4a.jpg)
 
 # Screen Shot   
 ![ftp-srver-1](https://user-images.githubusercontent.com/6020549/107865100-9d713280-6ea6-11eb-94d2-4a249bd36a7b.jpg)
