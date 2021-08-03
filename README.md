@@ -35,6 +35,9 @@ You have to set this config value with menuconfig.
 ## File System Selection
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
+- FAT file system on FLASH   
+- FAT file system on SPI peripheral SDCARD   
+- FAT file system on SDMMC peripheral SDCARD
 
 ### FAT file system on FLASH   
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/127939717-05ffd887-1b50-4912-bd8b-9386098eca35.jpg)
