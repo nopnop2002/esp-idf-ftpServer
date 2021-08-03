@@ -73,16 +73,8 @@ __Must be formatted with FAT32 before use__
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-|ESP32-S2 pin|SPI pin|Notes|
-|:-:|:-:|:--|
-|GPIO14|SCK|10k pull up if can't mount|
-|GPIO15|MOSI|10k pull up if can't mount|
-|GPIO2|MISO|10k pull up if can't mount|
-|GPIO13|CS|10k pull up if can't mount|
-|3.3V|VCC|Don't use 5V supply|
-|GND|GND||
-
-Note: This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.
+This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
+In SPI mode, pins can be customized.   
 
 # Using FAT file system on SDMMC peripheral SDCARD
 __Must be formatted with FAT32 before use__
@@ -100,27 +92,17 @@ __Must be formatted with FAT32 before use__
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-|ESP32-S2 pin|SD card pin|Notes|
-|:-:|:-:|:--|
-|GPIO14|CLK|10k pullup|
-|GPIO15|CMD|10k pullup|
-|GPIO2|D0|10k pullup|
-|GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
-|N/C|CD|optional, not used in the example|
-|N/C|WP|optional, not used in the example|
-|3.3V|VCC|Don't use 5V supply|
-|GND|GND||
-
-Note: that ESP32-S2 doesn't include SD Host peripheral and only supports SD over SPI. Therefore only SCK, MOSI, MISO, CS and ground pins need to be connected.
+This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
+ESP32-S2 doesn't include SD Host peripheral and only supports SD over SPI.   
 
 # Note about GPIO2 (ESP32 only)   
-GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode.   
-One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
+GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode. One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
+
+- Some boards have pulldown and/or LED on GPIO2. LED is usually ok, but pulldown will interfere with D0 signals and must be removed. Check the schematic of your development board for anything connected to GPIO2.
 
 # Note about GPIO12 (ESP32 only)   
-GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO).   
-This pin has an internal pulldown so if left unconnected it will read low at reset (selecting default 3.3V operation).   
-When adding a pullup to this pin for SD card operation, consider the following:
+GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO). This pin has an internal pulldown so if left unconnected it will read low at reset (selecting default 3.3V operation). When adding a pullup to this pin for SD card operation, consider the following:
+
 - For boards which don't use the internal regulator (VDD_SDIO) to power the flash, GPIO12 can be pulled high.
 - For boards which use 1.8V flash chip, GPIO12 needs to be pulled high at reset. This is fully compatible with SD card operation.
 - On boards which use the internal regulator and a 3.3V flash chip, GPIO12 must be low at reset. This is incompatible with SD card operation.
