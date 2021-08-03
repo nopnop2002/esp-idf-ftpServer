@@ -40,7 +40,7 @@ You can select any one using menuconfig.
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/127939717-05ffd887-1b50-4912-bd8b-9386098eca35.jpg)
 
 ### FAT file system on SPI peripheral SDCARD   
-![config-filesystem-2](https://user-images.githubusercontent.com/6020549/127939720-10306987-22d0-414a-9e3b-1fe39dc88eb6.jpg)
+![config-filesystem-2](https://user-images.githubusercontent.com/6020549/127943091-ea4ceb25-98b3-4960-9bf8-96ab01ed8df9.jpg)
 
 ### FAT file system on SDMMC peripheral SDCARD   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/127939723-db3da4d8-40fb-49ac-81e2-7c86f7163d81.jpg)
@@ -66,10 +66,10 @@ __Must be formatted with FAT32 before use__
 
 |ESP32 pin|SPI pin|Notes|
 |:-:|:-:|:--|
-|GPIO14|SCK|10k pull up if can't mount|
-|GPIO15|MOSI|10k pull up if can't mount|
-|GPIO2|MISO|10k pull up if can't mount|
-|GPIO13|CS|10k pull up if can't mount|
+|GPIO16|MISO||
+|GPIO13|CS|||
+|GPIO14|SCK||
+|GPIO15|MOSI|10k pullup if can't mount|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 

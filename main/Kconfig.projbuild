@@ -25,7 +25,7 @@ menu "FTP Server Configuration"
 		depends on SPI_SDCARD
 		int "MISO GPIO number"
 		range 0 46
-		default 2 if IDF_TARGET_ESP32
+		default 16 if IDF_TARGET_ESP32
 		default 13 if IDF_TARGET_ESP32S2
 		help
 			GPIO number (IOxx) to SPI MISO.
