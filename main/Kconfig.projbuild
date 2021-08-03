@@ -1,6 +1,6 @@
 menu "FTP Server Configuration"
 
-	comment "for File System Selection"
+	menu "File System Selection"
 
 	choice FILE_SYSTEM
 		prompt "File System Selection"
@@ -82,7 +82,9 @@ menu "FTP Server Configuration"
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-	comment "for WiFi Setting"
+	endmenu
+
+	menu "WiFi Setting"
 
 	config ESP_WIFI_SSID
 		string "WiFi SSID"
@@ -101,6 +103,12 @@ menu "FTP Server Configuration"
 		default 5
 		help
 			Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+
+	config MDNS_HOSTNAME
+		string "mDNS Hostname"
+		default "ftp-server"
+		help
+			mDNS Hostname for FTP Server.
 
 	config STATIC_IP
 		bool "Enable Static IP Address"
@@ -129,8 +137,6 @@ menu "FTP Server Configuration"
 		help
 			Static Netmask for Statione.
 
-	comment "for NTP Server Setting"
-
 	config NTP_SERVER
 		string "NTP Server"
 		default "pool.ntp.org"
@@ -144,13 +150,11 @@ menu "FTP Server Configuration"
 		help
 			Your local timezone.  When it is 0, Greenwich Mean Time.
 
-	comment "for FTP Server Setting"
 
-	config MDNS_HOSTNAME
-		string "mDNS Hostname"
-		default "ftp-server"
-		help
-			mDNS Hostname for FTP Server.
+	endmenu
+
+
+	menu "FTP Server Setting"
 
 	config FTP_USER
 		string "FTP User Name"
@@ -163,5 +167,7 @@ menu "FTP Server Configuration"
 		default "esp32"
 		help
 			FTP Password for this Server.
+
+	endmenu
 
 endmenu

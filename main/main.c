@@ -89,37 +89,6 @@ static void event_handler(void* arg, esp_event_base_t event_base,
 	}
 } 
 
-bool parseAddress(int * ip, char * text) {
-	ESP_LOGD(TAG, "parseAddress text=[%s]",text);
-	int len = strlen(text);
-	int octet = 0;
-	char buf[4];
-	int index = 0;
-	for(int i=0;i<len;i++) {
-		char c = text[i];
-		if (c == '.') {
-			ESP_LOGD(TAG, "buf=[%s] octet=%d", buf, octet);
-			ip[octet] = strtol(buf, NULL, 10);
-			octet++;
-			index = 0;
-		} else {
-			if (index == 3) return false;
-			if (c < '0' || c > '9') return false;
-			buf[index++] = c;
-			buf[index] = 0;
-		}
-	}
-
-	if (strlen(buf) > 0) {
-		ESP_LOGD(TAG, "buf=[%s] octet=%d", buf, octet);
-		ip[octet] = strtol(buf, NULL, 10);
-		octet++;
-	}
-	if (octet != 4) return false;
-	return true;
-
-}
-
 esp_err_t wifi_init_sta()
 {
 	esp_err_t ret_value = ESP_OK;
@@ -143,30 +112,6 @@ esp_err_t wifi_init_sta()
 	ESP_LOGI(TAG, "CONFIG_STATIC_GW_ADDRESS=[%s]",CONFIG_STATIC_GW_ADDRESS);
 	ESP_LOGI(TAG, "CONFIG_STATIC_NM_ADDRESS=[%s]",CONFIG_STATIC_NM_ADDRESS);
 
-	int ip[4];
-	bool ret = parseAddress(ip, CONFIG_STATIC_IP_ADDRESS);
-	ESP_LOGI(TAG, "parseAddress ret=%d ip=%d.%d.%d.%d", ret, ip[0], ip[1], ip[2], ip[3]);
-	if (!ret) {
-		ESP_LOGE(TAG, "CONFIG_STATIC_IP_ADDRESS [%s] not correct", CONFIG_STATIC_IP_ADDRESS);
-	while(1) { vTaskDelay(1); }
-	}
-
-	int gw[4];
-	ret = parseAddress(gw, CONFIG_STATIC_GW_ADDRESS);
-	ESP_LOGI(TAG, "parseAddress ret=%d gw=%d.%d.%d.%d", ret, gw[0], gw[1], gw[2], gw[3]);
-	if (!ret) {
-		ESP_LOGE(TAG, "CONFIG_STATIC_GW_ADDRESS [%s] not correct", CONFIG_STATIC_GW_ADDRESS);
-	while(1) { vTaskDelay(1); }
-	}
-
-	int nm[4];
-	ret = parseAddress(nm, CONFIG_STATIC_NM_ADDRESS);
-	ESP_LOGI(TAG, "parseAddress ret=%d nm=%d.%d.%d.%d", ret, nm[0], nm[1], nm[2], nm[3]);
-	if (!ret) {
-		ESP_LOGE(TAG, "CONFIG_STATIC_NM_ADDRESS [%s] not correct", CONFIG_STATIC_NM_ADDRESS);
-	while(1) { vTaskDelay(1); }
-	}
-
 #if ESP_IDF_VERSION_MAJOR >= 4 && ESP_IDF_VERSION_MINOR >= 1
 	/* Stop DHCP client */
 	ESP_ERROR_CHECK(esp_netif_dhcpc_stop(netif));
@@ -174,21 +119,23 @@ esp_err_t wifi_init_sta()
 
 	/* Set STATIC IP Address */
 	esp_netif_ip_info_t ip_info;
-	IP4_ADDR(&ip_info.ip, ip[0], ip[1], ip[2], ip[3]);
-	IP4_ADDR(&ip_info.gw, gw[0], gw[1], gw[2], gw[3]);
-	IP4_ADDR(&ip_info.netmask, nm[0], nm[1], nm[2], nm[3]);
-	//tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info);
+	memset(&ip_info, 0 , sizeof(esp_netif_ip_info_t));
+	ip_info.ip.addr = ipaddr_addr(CONFIG_STATIC_IP_ADDRESS);
+	ip_info.netmask.addr = ipaddr_addr(CONFIG_STATIC_NM_ADDRESS);
+	ip_info.gw.addr = ipaddr_addr(CONFIG_STATIC_GW_ADDRESS);;
 	esp_netif_set_ip_info(netif, &ip_info);
 
 #else
 	/* Stop DHCP client */
 	tcpip_adapter_dhcpc_stop(TCPIP_ADAPTER_IF_STA);
+	ESP_LOGI(TAG, "Stop DHCP Services");
 
 	/* Set STATIC IP Address */
 	tcpip_adapter_ip_info_t ipInfo;
-	IP4_ADDR(&ipInfo.ip, ip[0], ip[1], ip[2], ip[3]);
-	IP4_ADDR(&ipInfo.gw, gw[0], gw[1], gw[2], gw[3]);
-	IP4_ADDR(&ipInfo.netmask, nm[0], nm[1], nm[2], nm[3]);
+	memset(&ip_info, 0 , sizeof(tcpip_adapter_ip_info_t));
+	ip_info.ip.addr = ipaddr_addr(CONFIG_STATIC_IP_ADDRESS);
+	ip_info.netmask.addr = ipaddr_addr(CONFIG_STATIC_NM_ADDRESS);
+	ip_info.gw.addr = ipaddr_addr(CONFIG_STATIC_GW_ADDRESS);;
 	tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ipInfo);
 #endif
 
@@ -299,7 +246,12 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	//sdmmc_card_t* card;
 
 #if CONFIG_MMC_SDCARD
-	ESP_LOGI(TAG, "Initializing SDMMC peripheral");
+	// Use settings defined above to initialize SD card and mount FAT filesystem.
+	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
+	// Please check its source code and implement error recovery when developing
+	// production applications.
+
+	ESP_LOGI(TAG, "Using SDMMC peripheral");
 	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
 
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
@@ -307,20 +259,33 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
 	// To use 1-line SD mode, uncomment the following line:
-	// slot_config.width = 1;
+	slot_config.width = 4;
 
-	// GPIOs 15, 2, 4, 12, 13 should have external 10k pull-ups.
-	// Internal pull-ups are not sufficient. However, enabling internal pull-ups
-	// does make a difference some boards, so we do that here.
-	gpio_set_pull_mode(15, GPIO_PULLUP_ONLY);	// CMD, needed in 4- and 1- line modes
-	gpio_set_pull_mode(2, GPIO_PULLUP_ONLY);	// D0, needed in 4- and 1-line modes
-	gpio_set_pull_mode(4, GPIO_PULLUP_ONLY);	// D1, needed in 4-line mode only
-	gpio_set_pull_mode(12, GPIO_PULLUP_ONLY);	// D2, needed in 4-line mode only
-	gpio_set_pull_mode(13, GPIO_PULLUP_ONLY);	// D3, needed in 4- and 1-line modes
+	// On chips where the GPIOs used for SD card can be configured, set them in
+	// the slot_config structure:
+#ifdef SOC_SDMMC_USE_GPIO_MATRIX
+	slot_config.clk = GPIO_NUM_14;
+	slot_config.cmd = GPIO_NUM_15;
+	slot_config.d0 = GPIO_NUM_2;
+	slot_config.d1 = GPIO_NUM_4;
+	slot_config.d2 = GPIO_NUM_12;
+	slot_config.d3 = GPIO_NUM_13;
+#endif
+
+	// Enable internal pullups on enabled pins. The internal pullups
+	// are insufficient however, please make sure 10k external pullups are
+	// connected on the bus. This is for debug / example purpose only.
+	slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
 	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
+
 #else
-	ESP_LOGI(TAG, "Initializing SPI peripheral");
+	// Use settings defined above to initialize SD card and mount FAT filesystem.
+	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
+	// Please check its source code and implement error recovery when developing
+	// production applications.
+	ESP_LOGI(TAG, "Using SPI peripheral");
+
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
 		.mosi_io_num = PIN_NUM_MOSI,

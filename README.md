@@ -28,43 +28,37 @@ idf.py flash monitor
 ```
 # Configure
 You have to set this config value with menuconfig.   
-- CONFIG_FILE_SYSTEM   
-See below.
-- CONFIG_ESP_WIFI_SSID   
-SSID of your wifi.
-- CONFIG_ESP_WIFI_PASSWORD   
-PASSWORD of your wifi.
-- CONFIG_ESP_MAXIMUM_RETRY   
-Maximum number of retries when connecting to wifi.   
-- CONFIG_STATIC_IP   
-- CONFIG_STATIC_IP_ADDRESS   
-- CONFIG_STATIC_GW_ADDRESS   
-Enable Static IP Address.   
-- CONFIG_NTP_SERVER   
-- CONFIG_LOCAL_TIMEZONE   
-Hostname for NTP Server and your timezone.   
-This server manages file timestamps in GMT.   
-- CONFIG_MDNS_HOSTNAME   
-mDNS hostname of this Server.   
-You can connect with mDNS.local.   
-- CONFIG_FTP_USER   
-Username of FTP Server.
-- CONFIG_FTP_PASSWORD   
-Password of FTP Server.
 
 ![config-main](https://user-images.githubusercontent.com/6020549/107847756-a4aa2900-6e31-11eb-9525-6fd82bead5a3.jpg)
-![config-app-1](https://user-images.githubusercontent.com/6020549/107847757-a5db5600-6e31-11eb-8ffb-9b5a2b12e0a6.jpg)
-![config-app-2](https://user-images.githubusercontent.com/6020549/107847758-a673ec80-6e31-11eb-8620-b81575f833e0.jpg)
-![config-app-3](https://user-images.githubusercontent.com/6020549/107847759-a673ec80-6e31-11eb-8fa6-e874cda34a2a.jpg)
+![config-app](https://user-images.githubusercontent.com/6020549/127939325-1b565ef7-9045-4800-95ad-0153342b5fc1.jpg)
 
-# File system   
+## File System Sekection
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
 - FAT file system on FLASH   
+![config-filesystem-1](https://user-images.githubusercontent.com/6020549/127939717-05ffd887-1b50-4912-bd8b-9386098eca35.jpg)
+
 - FAT file system on SPI peripheral SDCARD   
+![config-filesystem-2](https://user-images.githubusercontent.com/6020549/127939720-10306987-22d0-414a-9e3b-1fe39dc88eb6.jpg)
+
 - FAT file system on SDMMC peripheral SDCARD   
+![config-filesystem-3](https://user-images.githubusercontent.com/6020549/127939723-db3da4d8-40fb-49ac-81e2-7c86f7163d81.jpg)
 
 Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
+
+
+## WiFi Setting
+![config-wifi-1](https://user-images.githubusercontent.com/6020549/127940375-f19519f0-88ce-407a-aa83-a00de776689e.jpg)
+
+You can connect using mDNS.
+![config-wifi-2](https://user-images.githubusercontent.com/6020549/127940382-d431c962-746e-45d7-9693-3f844c0b01d3.jpg)
+
+You can use static IP.
+![config-wifi-3](https://user-images.githubusercontent.com/6020549/127940390-3edfb3ea-6545-4709-9786-3e8a944e5ac7.jpg)
+
+
+## FTP Server Setting
+![config-server](https://user-images.githubusercontent.com/6020549/127940653-0d54f2ca-5dee-4c97-a7e7-276299237a41.jpg)
 
 # Using FAT file system on SPI peripheral SDCARD
 __Must be formatted with FAT32 before use__
