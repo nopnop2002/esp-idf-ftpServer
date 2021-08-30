@@ -113,7 +113,10 @@ GPIO12 is used as a bootstrapping pin to select output voltage of an internal re
 
 # Limitations   
 - The server does not support multiple connections.   
-- The server does not support active connection. __Only passive connection.__   
+- The server does not support active connection.    
+ __Only passive connections are supported.__   
+ Unfortunately, Windows standard ftp.exe does not allow passive mode (PASV) connections.   
+ If you have to make a passive mode connection On Windows, you need to use another software such as FFFTP / WinSCP / FileZilla to connect in passive mode.   
 - The server can only process these commands.
    * SYST
    * CDUP
