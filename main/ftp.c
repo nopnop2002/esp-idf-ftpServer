@@ -145,6 +145,7 @@ static void stoupper (char *str) {
 
 //--------------------------------------------------------------
 static bool ftp_open_file (const char *path, const char *mode) {
+	ESP_LOGI(FTP_TAG, "ftp_open_file path=[%s]", path);
 	char fullname[128];
 	strcpy(fullname, MOUNT_POINT);
 	strcat(fullname, path);
@@ -959,7 +960,7 @@ static void ftp_process_cmd (void) {
 			ftp_data.time = 0;
 			ftp_get_param_and_open_child(&bufptr);
 			if ((strlen(ftp_path) > 0) && (ftp_path[strlen(ftp_path)-1] != '/')) {
-				ESP_LOGI(FTP_TAG, "E_FTP_CMD_STOR ftp_path=[%s]", ftp_pass);
+				ESP_LOGI(FTP_TAG, "E_FTP_CMD_STOR ftp_path=[%s]", ftp_path);
 				if (ftp_open_file(ftp_path, "wb")) {
 					ftp_data.state = E_FTP_STE_CONTINUE_FILE_RX;
 					vTaskDelay(20 / portTICK_PERIOD_MS);
@@ -978,7 +979,7 @@ static void ftp_process_cmd (void) {
 		case E_FTP_CMD_DELE:
 			ftp_get_param_and_open_child(&bufptr);
 			if ((strlen(ftp_path) > 0) && (ftp_path[strlen(ftp_path)-1] != '/')) {
-				ESP_LOGI(FTP_TAG, "E_FTP_CMD_DELE ftp_path=[%s]", ftp_pass);
+				ESP_LOGI(FTP_TAG, "E_FTP_CMD_DELE ftp_path=[%s]", ftp_path);
 
 				strcat(fullname, ftp_path);
 				ESP_LOGI(FTP_TAG, "E_FTP_CMD_DELE fullname=[%s]", fullname);
@@ -995,7 +996,7 @@ static void ftp_process_cmd (void) {
 		case E_FTP_CMD_RMD:
 			ftp_get_param_and_open_child(&bufptr);
 			if ((strlen(ftp_path) > 0) && (ftp_path[strlen(ftp_path)-1] != '/')) {
-				ESP_LOGI(FTP_TAG, "E_FTP_CMD_RMD ftp_path=[%s]", ftp_pass);
+				ESP_LOGI(FTP_TAG, "E_FTP_CMD_RMD ftp_path=[%s]", ftp_path);
 
 				strcat(fullname, ftp_path);
 				ESP_LOGI(FTP_TAG, "E_FTP_CMD_MKD fullname=[%s]", fullname);
@@ -1012,7 +1013,7 @@ static void ftp_process_cmd (void) {
 		case E_FTP_CMD_MKD:
 			ftp_get_param_and_open_child(&bufptr);
 			if ((strlen(ftp_path) > 0) && (ftp_path[strlen(ftp_path)-1] != '/')) {
-				ESP_LOGI(FTP_TAG, "E_FTP_CMD_MKD ftp_path=[%s]", ftp_pass);
+				ESP_LOGI(FTP_TAG, "E_FTP_CMD_MKD ftp_path=[%s]", ftp_path);
 
 				strcat(fullname, ftp_path);
 				ESP_LOGI(FTP_TAG, "E_FTP_CMD_MKD fullname=[%s]", fullname);
@@ -1028,7 +1029,7 @@ static void ftp_process_cmd (void) {
 			break;
 		case E_FTP_CMD_RNFR:
 			ftp_get_param_and_open_child(&bufptr);
-			ESP_LOGI(FTP_TAG, "E_FTP_CMD_RNFR ftp_path=[%s]", ftp_pass);
+			ESP_LOGI(FTP_TAG, "E_FTP_CMD_RNFR ftp_path=[%s]", ftp_path);
 
 			strcat(fullname, ftp_path);
 			ESP_LOGI(FTP_TAG, "E_FTP_CMD_MKD fullname=[%s]", fullname);
@@ -1046,7 +1047,7 @@ static void ftp_process_cmd (void) {
 		case E_FTP_CMD_RNTO:
 			ftp_get_param_and_open_child(&bufptr);
 			// the path of the file to rename was saved in the data buffer
-			ESP_LOGI(FTP_TAG, "E_FTP_CMD_RNTO ftp_path=[%s], ftp_data.dBuffer=[%s]", ftp_pass, (char *)ftp_data.dBuffer);
+			ESP_LOGI(FTP_TAG, "E_FTP_CMD_RNTO ftp_path=[%s], ftp_data.dBuffer=[%s]", ftp_path, (char *)ftp_data.dBuffer);
 			strcat(fullname, (char *)ftp_data.dBuffer);
 			ESP_LOGI(FTP_TAG, "E_FTP_CMD_RNTO fullname=[%s]", fullname);
 			strcat(fullname2, ftp_path);
