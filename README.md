@@ -163,9 +163,8 @@ __You need to set the connection type to Passive Mode.__
 ![WinSCP](https://user-images.githubusercontent.com/6020549/110587152-9d6b0680-81b6-11eb-857d-31d87379a3b1.jpg)
 
 - FileZilla   
-You need to make this setting when using FileZilla.   
+You need to make this setting when using FileZilla.
 ![FileZilla-2](https://user-images.githubusercontent.com/6020549/131814449-e31e405c-0a7e-418f-b254-d1f6476d8ae7.jpg)
-
 ![FileZilla](https://user-images.githubusercontent.com/6020549/110587823-795bf500-81b7-11eb-8dcb-eeb6e096e9f6.jpg)
 
 - FFFTP   
