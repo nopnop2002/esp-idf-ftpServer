@@ -164,7 +164,7 @@ __You need to set the connection type to Passive Mode.__
 
 - FileZilla   
 You need to make this setting when using FileZilla.
-![FileZilla-2](https://user-images.githubusercontent.com/6020549/131814449-e31e405c-0a7e-418f-b254-d1f6476d8ae7.jpg)
+![FileZilla-2](https://user-images.githubusercontent.com/6020549/131819541-0ad0aacb-ed79-45c3-a536-bd239463ef02.jpg)
 ![FileZilla](https://user-images.githubusercontent.com/6020549/110587823-795bf500-81b7-11eb-8dcb-eeb6e096e9f6.jpg)
 
 - FFFTP   
