@@ -34,7 +34,7 @@ static char *MOUNT_POINT = "/root";
 EventGroupHandle_t xEventTask;
 
 //for test
-//#define CONFIG_FATFS	1
+//#define CONFIG_FLASH	1
 //#define CONFIG_SPI_SDCARD  1
 //#define CONFIG_MMC_SDCARD  1
 
@@ -53,16 +53,16 @@ static EventGroupHandle_t s_wifi_event_group;
 // With this mapping, SD card can be used both in SPI and 1-line SD mode.
 // Note that a pull-up on CS line is required in SD mode.
 #if 0
-#define PIN_NUM_MISO	2
-#define PIN_NUM_MOSI	15
-#define PIN_NUM_SCLK	14
-#define PIN_NUM_CS		13
+#define PIN_NUM_MISO 2
+#define PIN_NUM_MOSI 15
+#define PIN_NUM_SCLK 14
+#define PIN_NUM_CS   13
 #endif
-#define PIN_NUM_MISO	CONFIG_MISO_GPIO
-#define PIN_NUM_MOSI	CONFIG_MOSI_GPIO
-#define PIN_NUM_SCLK	CONFIG_SCLK_GPIO
-#define PIN_NUM_CS		CONFIG_CS_GPIO
-#define PIN_POWER		CONFIG_POWER_GPIO
+#define PIN_NUM_MISO CONFIG_MISO_GPIO
+#define PIN_NUM_MOSI CONFIG_MOSI_GPIO
+#define PIN_NUM_SCLK CONFIG_SCLK_GPIO
+#define PIN_NUM_CS   CONFIG_CS_GPIO
+#define PIN_POWER    CONFIG_POWER_GPIO
 #endif 
 
 static int s_retry_num = 0;
@@ -201,20 +201,22 @@ esp_err_t wifi_init_sta()
 	return ret_value; 
 }
 
-#if CONFIG_FATFS
-wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
-	ESP_LOGI(TAG, "Initializing FAT file system");
+#if CONFIG_FLASH
+wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
+	ESP_LOGI(TAG, "Initializing FLASH file system");
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
 	const esp_vfs_fat_mount_config_t mount_config = {
-		.max_files = 4,
+		//.max_files = 4,
+		.max_files = 16,
+		//.max_files = 32,
 		.format_if_mount_failed = true,
 		.allocation_unit_size = CONFIG_WL_SECTOR_SIZE
 	};
 	wl_handle_t s_wl_handle;
 	esp_err_t err = esp_vfs_fat_spiflash_mount(mount_point, partition_label, &mount_config, &s_wl_handle);
 	if (err != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
+		ESP_LOGE(TAG, "Failed to mount FLASH (%s)", esp_err_to_name(err));
 		return -1;
 	}
 	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
@@ -234,13 +236,16 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
+	ESP_LOGI(TAG, "Initializing SDCARD file system");
 	esp_err_t ret;
 	// Options for mounting the filesystem.
 	// If format_if_mount_failed is set to true, SD card will be partitioned and
 	// formatted in case when mounting fails.
 	esp_vfs_fat_sdmmc_mount_config_t mount_config = {
 		.format_if_mount_failed = true,
-		.max_files = 5,
+		//.max_files = 5,
+		.max_files = 16,
+		//.max_files = 32,
 		.allocation_unit_size = 16 * 1024
 	};
 	//sdmmc_card_t* card;
@@ -420,10 +425,10 @@ void app_main(void)
 	ESP_LOGI(TAG, "The local date/time is: %s", strftime_buf);
 	ESP_LOGW(TAG, "This server manages file timestamps in GMT.");
 
-	// Mount FAT file system
-#if CONFIG_FATFS
+#if CONFIG_FLASH
+	// Mount FAT File System on FLASH
 	char *partition_label = "storage";
-	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
+	wl_handle_t s_wl_handle = mountFLASH(partition_label, MOUNT_POINT);
 	if (s_wl_handle < 0) return;
 #endif 
 
@@ -439,6 +444,7 @@ void app_main(void)
 #endif
 	
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
+	// Mount FAT File System on SDCARD
 	sdmmc_card_t card;
 	ret = mountSDCARD(MOUNT_POINT, &card);
 	if (ret != ESP_OK) return;
@@ -455,9 +461,9 @@ void app_main(void)
 	ESP_LOGE(TAG, "ftp_task finish");
 
 	// Unmount FAT file system
-#if CONFIG_FATFS
+#if CONFIG_FLASH
 	esp_vfs_fat_spiflash_unmount(MOUNT_POINT, s_wl_handle);
-	ESP_LOGI(TAG, "FATFS unmounted");
+	ESP_LOGI(TAG, "FLASH unmounted");
 #endif 
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD

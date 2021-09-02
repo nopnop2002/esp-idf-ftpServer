@@ -148,7 +148,7 @@ static bool ftp_open_file (const char *path, const char *mode) {
 	char fullname[128];
 	strcpy(fullname, MOUNT_POINT);
 	strcat(fullname, path);
-	ESP_LOGI(FTP_TAG, "ftp_open_file fukname=[%s]", fullname);
+	ESP_LOGI(FTP_TAG, "ftp_open_file fullname=[%s]", fullname);
 	//ftp_data.fp = fopen(path, mode);
 	ftp_data.fp = fopen(fullname, mode);
 	if (ftp_data.fp == NULL) {
@@ -959,6 +959,7 @@ static void ftp_process_cmd (void) {
 			ftp_data.time = 0;
 			ftp_get_param_and_open_child(&bufptr);
 			if ((strlen(ftp_path) > 0) && (ftp_path[strlen(ftp_path)-1] != '/')) {
+				ESP_LOGI(FTP_TAG, "E_FTP_CMD_STOR ftp_path=[%s]", ftp_pass);
 				if (ftp_open_file(ftp_path, "wb")) {
 					ftp_data.state = E_FTP_STE_CONTINUE_FILE_RX;
 					vTaskDelay(20 / portTICK_PERIOD_MS);
@@ -978,7 +979,12 @@ static void ftp_process_cmd (void) {
 			ftp_get_param_and_open_child(&bufptr);
 			if ((strlen(ftp_path) > 0) && (ftp_path[strlen(ftp_path)-1] != '/')) {
 				ESP_LOGI(FTP_TAG, "E_FTP_CMD_DELE ftp_path=[%s]", ftp_pass);
-				if (unlink(ftp_path) == 0) {
+
+				strcat(fullname, ftp_path);
+				ESP_LOGI(FTP_TAG, "E_FTP_CMD_DELE fullname=[%s]", fullname);
+
+				//if (unlink(ftp_path) == 0) {
+				if (unlink(fullname) == 0) {
 					vTaskDelay(20 / portTICK_PERIOD_MS);
 					ftp_send_reply(250, NULL);
 				}
