@@ -49,6 +49,7 @@ Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it becau
 
 ### FAT file system on SDMMC peripheral SDCARD   
 You can select 1 Line Mode & SD card speed.   
+SDMMC 4Line mode is difficult to use on the ESP32. (see below)   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/140200541-e693e5df-acd0-42bc-9c90-ab47ed6885a9.jpg)
 
 ## WiFi Setting
