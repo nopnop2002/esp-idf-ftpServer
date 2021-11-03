@@ -131,12 +131,12 @@ esp_err_t wifi_init_sta()
 	ESP_LOGI(TAG, "Stop DHCP Services");
 
 	/* Set STATIC IP Address */
-	tcpip_adapter_ip_info_t ipInfo;
+	tcpip_adapter_ip_info_t ip_info;
 	memset(&ip_info, 0 , sizeof(tcpip_adapter_ip_info_t));
 	ip_info.ip.addr = ipaddr_addr(CONFIG_STATIC_IP_ADDRESS);
 	ip_info.netmask.addr = ipaddr_addr(CONFIG_STATIC_NM_ADDRESS);
 	ip_info.gw.addr = ipaddr_addr(CONFIG_STATIC_GW_ADDRESS);;
-	tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ipInfo);
+	tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info);
 #endif
 
 	/*
@@ -258,13 +258,28 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 
 	ESP_LOGI(TAG, "Using SDMMC peripheral");
 	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
+#if CONFIG_SDMMC_SPEED_52M
+	host.max_freq_khz = SDMMC_FREQ_52M;
+#elif CONFIG_SDMMC_SPEED_26M
+	host.max_freq_khz = SDMMC_FREQ_26M;
+#elif CONFIG_SDMMC_SPEED_HIGH
+	host.max_freq_khz = SDMMC_FREQ_HIGHSPEED;
+#elif CONFIG_SDMMC_SPEED_DEFAULT
+	host.max_freq_khz = SDMMC_FREQ_DEFAULT;
+#elif CONFIG_SDMMC_SPEED_PROBING
+	host.max_freq_khz = SDMMC_FREQ_PROBING;
+#endif  /* CONFIG_SDMMC_SPEED */
 
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
 	// To use 1-line SD mode, uncomment the following line:
+#if CONFIG_SDMMC_ONE_LINE_MODE
+	slot_config.width = 1;
+#else
 	slot_config.width = 4;
+#endif  /* CONFIG_SDMMC_ONE_LINE_MODE */
 
 	// On chips where the GPIOs used for SD card can be configured, set them in
 	// the slot_config structure:
@@ -322,6 +337,9 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 			ESP_LOGE(TAG, "Failed to initialize the card (%s). "
 				"Make sure SD card lines have pull-up resistors in place.", esp_err_to_name(ret));
 		}
+#if CONFIG_MMC_SDCARD
+		ESP_LOGI(TAG, "Try setting the 1-line SD/MMC mode and lower the SD/MMC card speed.");
+#endif  /* CONFIG_MMC_SDCARD */
 		return ret;
 	}
 
