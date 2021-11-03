@@ -21,6 +21,43 @@ menu "FTP Server Configuration"
 				Use FAT File System on MMC SDCARD.
 	endchoice
 
+	config SDMMC_ONE_LINE_MODE
+		depends on MMC_SDCARD
+		bool "USE 1-line SD mode"
+		default false
+		help
+			Use only 1-line (true) or 4-lines (false, defalut) SD mode.
+			The 4-lines mode is faster but not all SD slots support it.
+			If you have trouble mounting an SD card, set this parameter to true.
+
+	choice SDMMC_SPEED
+		depends on MMC_SDCARD
+		prompt "SD card MMC speed"
+		default SDMMC_SPEED_HIGH
+		help
+			SD card speed. High values may cause SD card operation to be unstable.
+		config SDMMC_SPEED_52M
+			bool "52 KHz"
+			help
+				Very high speed.
+		config SDMMC_SPEED_26M
+			bool "26 KHz"
+			help
+				Higher speed.
+		config SDMMC_SPEED_HIGH
+			bool "40 KHz"
+			help
+				High speed.
+		config SDMMC_SPEED_DEFAULT
+			bool "20 KHz"
+			help
+				Default speed.
+		config SDMMC_SPEED_PROBING
+			bool "0.4 KHz"
+			help
+				Probing speed.
+	endchoice
+
 	config MISO_GPIO
 		depends on SPI_SDCARD
 		int "MISO GPIO number"
