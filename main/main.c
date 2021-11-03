@@ -95,16 +95,10 @@ esp_err_t wifi_init_sta()
 	s_wifi_event_group = xEventGroupCreate();
 	ESP_LOGI(TAG,"ESP-IDF Ver%d.%d", ESP_IDF_VERSION_MAJOR, ESP_IDF_VERSION_MINOR);
 
-#if ESP_IDF_VERSION_MAJOR >= 4 && ESP_IDF_VERSION_MINOR >= 1
 	ESP_LOGI(TAG,"ESP-IDF esp_netif");
 	ESP_ERROR_CHECK(esp_netif_init());
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 	esp_netif_t *netif = esp_netif_create_default_wifi_sta();
-#else
-	ESP_LOGI(TAG,"ESP-IDF tcpip_adapter");
-	tcpip_adapter_init();
-	ESP_ERROR_CHECK(esp_event_loop_create_default());
-#endif
 
 #if CONFIG_STATIC_IP
 
@@ -112,7 +106,6 @@ esp_err_t wifi_init_sta()
 	ESP_LOGI(TAG, "CONFIG_STATIC_GW_ADDRESS=[%s]",CONFIG_STATIC_GW_ADDRESS);
 	ESP_LOGI(TAG, "CONFIG_STATIC_NM_ADDRESS=[%s]",CONFIG_STATIC_NM_ADDRESS);
 
-#if ESP_IDF_VERSION_MAJOR >= 4 && ESP_IDF_VERSION_MINOR >= 1
 	/* Stop DHCP client */
 	ESP_ERROR_CHECK(esp_netif_dhcpc_stop(netif));
 	ESP_LOGI(TAG, "Stop DHCP Services");
@@ -124,20 +117,6 @@ esp_err_t wifi_init_sta()
 	ip_info.netmask.addr = ipaddr_addr(CONFIG_STATIC_NM_ADDRESS);
 	ip_info.gw.addr = ipaddr_addr(CONFIG_STATIC_GW_ADDRESS);;
 	esp_netif_set_ip_info(netif, &ip_info);
-
-#else
-	/* Stop DHCP client */
-	tcpip_adapter_dhcpc_stop(TCPIP_ADAPTER_IF_STA);
-	ESP_LOGI(TAG, "Stop DHCP Services");
-
-	/* Set STATIC IP Address */
-	tcpip_adapter_ip_info_t ip_info;
-	memset(&ip_info, 0 , sizeof(tcpip_adapter_ip_info_t));
-	ip_info.ip.addr = ipaddr_addr(CONFIG_STATIC_IP_ADDRESS);
-	ip_info.netmask.addr = ipaddr_addr(CONFIG_STATIC_NM_ADDRESS);
-	ip_info.gw.addr = ipaddr_addr(CONFIG_STATIC_GW_ADDRESS);;
-	tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info);
-#endif
 
 	/*
 	I referred from here.
@@ -452,7 +431,8 @@ void app_main(void)
 
 #if CONFIG_SPI_SDCARD
 	if (PIN_POWER != -1) {
-		gpio_pad_select_gpio(PIN_POWER);
+		//gpio_pad_select_gpio(PIN_POWER);
+		gpio_reset_pin(PIN_POWER);
 		/* Set the GPIO as a push/pull output */
 		gpio_set_direction(PIN_POWER, GPIO_MODE_OUTPUT);
 		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", PIN_POWER);
