@@ -49,8 +49,6 @@ Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it becau
 
 ### FAT file system on SDMMC peripheral SDCARD   
 You can select 1 Line Mode & SD card speed.   
-However, SD card speed option does not affect the final transmission rate.   
-The final transmission rate is about 30 KB/s.   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/140200541-e693e5df-acd0-42bc-9c90-ab47ed6885a9.jpg)
 
 ## WiFi Setting
