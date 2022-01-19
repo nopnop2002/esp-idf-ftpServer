@@ -8,6 +8,10 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 esp-idf v4.4 or later.   
 This is because this version supports ESP32-C3.   
 
+# Hardware requiment   
+Flash size is required at 4M.   
+__Models with a Flash Size 2M, such as the ESP32-C3-2M, cannot be used.__   
+
 # Installation for ESP32
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpServer
