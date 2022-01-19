@@ -2,6 +2,13 @@ menu "FTP Server Configuration"
 
 	menu "File System Selection"
 
+	config GPIO_RANGE_MAX
+		int
+		default 33 if IDF_TARGET_ESP32
+		default 46 if IDF_TARGET_ESP32S2
+		default 19 if IDF_TARGET_ESP32C3
+		default 48 if IDF_TARGET_ESP32S3
+
 	choice FILE_SYSTEM
 		prompt "File System Selection"
 		default FLASH
@@ -16,6 +23,7 @@ menu "FTP Server Configuration"
 			help
 				Use FAT File System on SPI SDCARD.
 		config MMC_SDCARD
+			depends on IDF_TARGET_ESP32
 			bool "FAT File System on MMC SDCARD"
 			help
 				Use FAT File System on MMC SDCARD.
@@ -61,57 +69,60 @@ menu "FTP Server Configuration"
 	config MISO_GPIO
 		depends on SPI_SDCARD
 		int "MISO GPIO number"
-		range 0 46
-		default 16 if IDF_TARGET_ESP32
-		default 13 if IDF_TARGET_ESP32S2
+		range 0 GPIO_RANGE_MAX
+		default 19 if IDF_TARGET_ESP32
+		default 33 if IDF_TARGET_ESP32S2
+		default 3  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI MISO.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MISO.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-   config MOSI_GPIO
+	 config MOSI_GPIO
 		depends on SPI_SDCARD
 		int "MOSI GPIO number"
-		range 0 46
-		default 15 if IDF_TARGET_ESP32
-		default 11 if IDF_TARGET_ESP32S2
+		range 0 GPIO_RANGE_MAX
+		default 23 if IDF_TARGET_ESP32
+		default 35 if IDF_TARGET_ESP32S2
+		default 19 if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI MOSI.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-   config SCLK_GPIO
+	 config SCLK_GPIO
 		depends on SPI_SDCARD
 		int "SCLK GPIO number"
-		range 0 46
-		default 14 if IDF_TARGET_ESP32
-		default 12 if IDF_TARGET_ESP32S2
+		range 0 GPIO_RANGE_MAX
+		default 18 if IDF_TARGET_ESP32
+		default 36 if IDF_TARGET_ESP32S2
+		default 18 if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI SCLK.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to SCLK.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-   config CS_GPIO
+	 config CS_GPIO
 		depends on SPI_SDCARD
 		int "CS GPIO number"
-		range 0 46
-		default 13 if IDF_TARGET_ESP32
-		default 10 if IDF_TARGET_ESP32S2
+		range 0 GPIO_RANGE_MAX
+		default 14 if IDF_TARGET_ESP32
+		default 34 if IDF_TARGET_ESP32S2
+		default 9  if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI CS.
 			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
 			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
 			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
 
-   config POWER_GPIO
+	 config POWER_GPIO
 		depends on SPI_SDCARD
 		int "POWER GPIO number"
-		range -1 46
+		range -1 GPIO_RANGE_MAX
 		default -1 if IDF_TARGET_ESP32
 		default 14 if IDF_TARGET_ESP32S2
+		default -1 if IDF_TARGET_ESP32C3
 		help
 			GPIO number (IOxx) to SPI POWER.
 			When it is -1, the POWER isn't performed.
@@ -185,7 +196,7 @@ menu "FTP Server Configuration"
 		range 0 23
 		default 0
 		help
-			Your local timezone.  When it is 0, Greenwich Mean Time.
+			Your local timezone. When it is 0, Greenwich Mean Time.
 
 
 	endmenu

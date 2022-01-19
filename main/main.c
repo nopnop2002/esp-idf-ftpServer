@@ -1,9 +1,10 @@
-/* FTP Client example.
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
+/*
+ FTP Client example.
+ This example code is in the Public Domain (or CC0 licensed, at your option.)
 
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
+ Unless required by applicable law or agreed to in writing, this
+ software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ CONDITIONS OF ANY KIND, either express or implied.
 */
 
 #include <stdio.h>
@@ -46,24 +47,18 @@ static EventGroupHandle_t s_wifi_event_group;
  * - we are connected to the AP with an IP
  * - we failed to connect after the maximum amount of retries */
 #define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT	   BIT1
+#define WIFI_FAIL_BIT      BIT1
 
 #if CONFIG_SPI_SDCARD
 // Pin mapping when using SPI mode.
 // With this mapping, SD card can be used both in SPI and 1-line SD mode.
 // Note that a pull-up on CS line is required in SD mode.
-#if 0
-#define PIN_NUM_MISO 2
-#define PIN_NUM_MOSI 15
-#define PIN_NUM_SCLK 14
-#define PIN_NUM_CS   13
-#endif
 #define PIN_NUM_MISO CONFIG_MISO_GPIO
 #define PIN_NUM_MOSI CONFIG_MOSI_GPIO
 #define PIN_NUM_SCLK CONFIG_SCLK_GPIO
 #define PIN_NUM_CS   CONFIG_CS_GPIO
 #define PIN_POWER    CONFIG_POWER_GPIO
-#endif 
+#endif // CONFIG_SPI_SDCARD
 
 static int s_retry_num = 0;
 
@@ -133,7 +128,7 @@ esp_err_t wifi_init_sta()
 	d.u_addr.ip4.addr = 0x08080404; //8.8.4.4 dns
 	dns_setserver(1, &d);
 
-#endif
+#endif // CONFIG_STATIC_IP
 
 	wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -202,16 +197,18 @@ wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
 	ESP_LOGI(TAG, "s_wl_handle=%d",s_wl_handle);
 	return s_wl_handle;
 }
-#endif
+#endif // CONFIG_FLASH
 
 
-#ifdef CONFIG_IDF_TARGET_ESP32S2
-// on ESP32-S2, DMA channel must be the same as host id
-#define SPI_DMA_CHAN	host.slot
+
+#if CONFIG_IDF_TARGET_ESP32S2
+#define SPI_DMA_CHAN host.slot
+#elif CONFIG_IDF_TARGET_ESP32C3
+#define SPI_DMA_CHAN SPI_DMA_CH_AUTO
 #else
-// on ESP32, DMA channel to be used by the SPI peripheral
-#define SPI_DMA_CHAN	1
+#define SPI_DMA_CHAN 1
 #endif
+
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
@@ -247,7 +244,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	host.max_freq_khz = SDMMC_FREQ_DEFAULT;
 #elif CONFIG_SDMMC_SPEED_PROBING
 	host.max_freq_khz = SDMMC_FREQ_PROBING;
-#endif  /* CONFIG_SDMMC_SPEED */
+#endif	/* CONFIG_SDMMC_SPEED */
 
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
@@ -258,7 +255,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.width = 1;
 #else
 	slot_config.width = 4;
-#endif  /* CONFIG_SDMMC_ONE_LINE_MODE */
+#endif // CONFIG_SDMMC_ONE_LINE_MODE
 
 	// On chips where the GPIOs used for SD card can be configured, set them in
 	// the slot_config structure:
@@ -269,7 +266,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.d1 = GPIO_NUM_4;
 	slot_config.d2 = GPIO_NUM_12;
 	slot_config.d3 = GPIO_NUM_13;
-#endif
+#endif // SOC_SDMMC_USE_GPIO_MATRIX
 
 	// Enable internal pullups on enabled pins. The internal pullups
 	// are insufficient however, please make sure 10k external pullups are
@@ -306,7 +303,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
-#endif
+#endif // CONFIG_MMC_SDCARD
 
 	if (ret != ESP_OK) {
 		if (ret == ESP_FAIL) {
@@ -318,7 +315,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 		}
 #if CONFIG_MMC_SDCARD
 		ESP_LOGI(TAG, "Try setting the 1-line SD/MMC mode and lower the SD/MMC card speed.");
-#endif  /* CONFIG_MMC_SDCARD */
+#endif // CONFIG_MMC_SDCARD
 		return ret;
 	}
 
@@ -327,7 +324,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	ESP_LOGI(TAG, "Mounte SD card on %s", mount_point);
 	return ret;
 }
-#endif
+#endif // CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 
 void initialise_mdns(void)
 {
@@ -382,8 +379,8 @@ void app_main(void)
 	esp_err_t ret;
 	ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-	  ESP_ERROR_CHECK(nvs_flash_erase());
-	  ret = nvs_flash_init();
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		ret = nvs_flash_init();
 	}
 	ESP_ERROR_CHECK(ret);
 
@@ -401,7 +398,7 @@ void app_main(void)
 	/* Print the local IP address */
 	ESP_LOGI(TAG, "IP Address : %s", ip4addr_ntoa(&ip_info.ip));
 	ESP_LOGI(TAG, "Subnet mask: %s", ip4addr_ntoa(&ip_info.netmask));
-	ESP_LOGI(TAG, "Gateway	  : %s", ip4addr_ntoa(&ip_info.gw));
+	ESP_LOGI(TAG, "Gateway    : %s", ip4addr_ntoa(&ip_info.gw));
 
 	// obtain time over NTP
 	ESP_LOGI(TAG, "Getting time over NTP.");
@@ -452,9 +449,9 @@ void app_main(void)
 	xEventTask = xEventGroupCreate();
 	xTaskCreate(ftp_task, "FTP", 1024*6, NULL, 2, NULL);
 	xEventGroupWaitBits( xEventTask,
-		FTP_TASK_FINISH_BIT,			/* The bits within the event group to wait for. */
-		pdTRUE,		   /* BIT_0 should be cleared before returning. */
-		pdFALSE,	   /* Don't wait for both bits, either bit will do. */
+		FTP_TASK_FINISH_BIT, /* The bits within the event group to wait for. */
+		pdTRUE, /* BIT_0 should be cleared before returning. */
+		pdFALSE, /* Don't wait for both bits, either bit will do. */
 		portMAX_DELAY);/* Wait forever. */
 	ESP_LOGE(TAG, "ftp_task finish");
 

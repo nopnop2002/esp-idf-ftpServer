@@ -45,9 +45,10 @@ Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it becau
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/127939717-05ffd887-1b50-4912-bd8b-9386098eca35.jpg)
 
 ### FAT file system on SPI peripheral SDCARD   
-![config-filesystem-2](https://user-images.githubusercontent.com/6020549/127943091-ea4ceb25-98b3-4960-9bf8-96ab01ed8df9.jpg)
+![config-filesystem-2](https://user-images.githubusercontent.com/6020549/150039095-a3fd9c2d-55a8-4314-a825-01990a62cb61.jpg)
 
 ### FAT file system on SDMMC peripheral SDCARD   
+SDMMC can only be used with ESP32.   
 You can select 1 Line Mode & SD card speed.   
 SDMMC 4Line mode is difficult to use on the ESP32. (see below)   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/140200541-e693e5df-acd0-42bc-9c90-ab47ed6885a9.jpg)
