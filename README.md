@@ -6,7 +6,7 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 
 # Software requirements
 esp-idf v4.4 or later.   
-The mDNS strict mode [issue](https://github.com/espressif/esp-idf/issues/6190) has been resolved.   
+This is because this version supports ESP32-C3.   
 
 # Installation for ESP32
 ```
@@ -26,6 +26,18 @@ idf.py set-target esp32s2
 idf.py menuconfig
 idf.py flash monitor
 ```
+
+# Installation for ESP32-C3
+
+```
+git clone https://github.com/nopnop2002/esp-idf-ftpServer
+cd esp-idf-ftpServer/
+idf.py set-target esp32c3
+idf.py menuconfig
+idf.py flash monitor
+```
+
+
 # Configure
 You have to set this config value with menuconfig.   
 
