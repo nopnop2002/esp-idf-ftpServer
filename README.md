@@ -193,3 +193,16 @@ You need to make this setting when using FileZilla.
 I sometimes get this error when using external SPI SD card readers.   
 Requires a PullUp resistor.   
 ![sd-card-1](https://user-images.githubusercontent.com/6020549/107848058-fe135780-6e33-11eb-9eac-7ce160571276.jpg)
+
+
+You can see all the logging on the server side by commenting it out here.   
+```
+void ftp_task (void *pvParameters)
+{
+  ESP_LOGI(FTP_TAG, "ftp_task start");
+  //esp_log_level_set(FTP_TAG, ESP_LOG_WARN); ------------> Comment out
+  strcpy(ftp_user, CONFIG_FTP_USER);
+  strcpy(ftp_pass, CONFIG_FTP_PASSWORD);
+  ESP_LOGI(FTP_TAG, "ftp_user:[%s] ftp_pass:[%s]", ftp_user, ftp_pass);
+```
+
