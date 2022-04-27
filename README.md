@@ -73,7 +73,6 @@ You can use static IP.
 
 
 # Using FAT file system on SPI peripheral SDCARD
-__Must be formatted with FAT32 before use__
 
 |ESP32|ESP32S2/S3|ESP32C3|SPI card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
