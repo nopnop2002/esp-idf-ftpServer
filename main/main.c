@@ -47,18 +47,7 @@ static EventGroupHandle_t s_wifi_event_group;
  * - we are connected to the AP with an IP
  * - we failed to connect after the maximum amount of retries */
 #define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT      BIT1
-
-#if CONFIG_SPI_SDCARD
-// Pin mapping when using SPI mode.
-// With this mapping, SD card can be used both in SPI and 1-line SD mode.
-// Note that a pull-up on CS line is required in SD mode.
-#define PIN_NUM_MISO CONFIG_MISO_GPIO
-#define PIN_NUM_MOSI CONFIG_MOSI_GPIO
-#define PIN_NUM_SCLK CONFIG_SCLK_GPIO
-#define PIN_NUM_CS   CONFIG_CS_GPIO
-#define PIN_POWER    CONFIG_POWER_GPIO
-#endif // CONFIG_SPI_SDCARD
+#define WIFI_FAIL_BIT BIT1
 
 static int s_retry_num = 0;
 
@@ -94,6 +83,7 @@ esp_err_t wifi_init_sta()
 	ESP_ERROR_CHECK(esp_netif_init());
 	ESP_ERROR_CHECK(esp_event_loop_create_default());
 	esp_netif_t *netif = esp_netif_create_default_wifi_sta();
+	assert(netif);
 
 #if CONFIG_STATIC_IP
 
@@ -200,16 +190,6 @@ wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
 #endif // CONFIG_FLASH
 
 
-
-#if CONFIG_IDF_TARGET_ESP32S2
-#define SPI_DMA_CHAN host.slot
-#elif CONFIG_IDF_TARGET_ESP32C3
-#define SPI_DMA_CHAN SPI_DMA_CH_AUTO
-#else
-#define SPI_DMA_CHAN 1
-#endif
-
-
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	ESP_LOGI(TAG, "Initializing SDCARD file system");
@@ -281,17 +261,21 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// Please check its source code and implement error recovery when developing
 	// production applications.
 	ESP_LOGI(TAG, "Using SPI peripheral");
+	ESP_LOGI(TAG, "SDSPI_MOSI=%d", CONFIG_SDSPI_MOSI);
+	ESP_LOGI(TAG, "SDSPI_MISO=%d", CONFIG_SDSPI_MISO);
+	ESP_LOGI(TAG, "SDSPI_CLK=%d", CONFIG_SDSPI_CLK);
+	ESP_LOGI(TAG, "SDSPI_CS=%d", CONFIG_SDSPI_CS);
 
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
-		.mosi_io_num = PIN_NUM_MOSI,
-		.miso_io_num = PIN_NUM_MISO,
-		.sclk_io_num = PIN_NUM_SCLK,
+		.mosi_io_num = CONFIG_SDSPI_MOSI,
+		.miso_io_num = CONFIG_SDSPI_MISO,
+		.sclk_io_num = CONFIG_SDSPI_CLK,
 		.quadwp_io_num = -1,
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
 	};
-	ret = spi_bus_initialize(host.slot, &bus_cfg, SPI_DMA_CHAN);
+	ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize bus.");
 		return ret;
@@ -299,7 +283,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdspi_device_config_t slot_config = SDSPI_DEVICE_CONFIG_DEFAULT();
-	slot_config.gpio_cs = PIN_NUM_CS;
+	slot_config.gpio_cs = CONFIG_SDSPI_CS;
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
@@ -392,13 +376,13 @@ void app_main(void)
 
 	// Initialize mDNS
 	initialise_mdns();
-	tcpip_adapter_ip_info_t ip_info;
-	ESP_ERROR_CHECK(tcpip_adapter_get_ip_info(TCPIP_ADAPTER_IF_STA, &ip_info));
+	esp_netif_ip_info_t ip_info;
+	ESP_ERROR_CHECK(esp_netif_get_ip_info(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"), &ip_info));
 
 	/* Print the local IP address */
-	ESP_LOGI(TAG, "IP Address : %s", ip4addr_ntoa(&ip_info.ip));
-	ESP_LOGI(TAG, "Subnet mask: %s", ip4addr_ntoa(&ip_info.netmask));
-	ESP_LOGI(TAG, "Gateway    : %s", ip4addr_ntoa(&ip_info.gw));
+	ESP_LOGI(TAG, "IP Address : ", IPSTR, IP2STR(&ip_info.ip));
+	ESP_LOGI(TAG, "Subnet mask: ", IPSTR, IP2STR(&ip_info.netmask));
+	ESP_LOGI(TAG, "Gateway		: ", IPSTR, IP2STR(&ip_info.gw));
 
 	// obtain time over NTP
 	ESP_LOGI(TAG, "Getting time over NTP.");
@@ -427,13 +411,13 @@ void app_main(void)
 #endif 
 
 #if CONFIG_SPI_SDCARD
-	if (PIN_POWER != -1) {
-		//gpio_pad_select_gpio(PIN_POWER);
-		gpio_reset_pin(PIN_POWER);
+	if (CONFIG_SDSPI_POWER != -1) {
+		//gpio_pad_select_gpio(CONFIG_SDSPI_POWER);
+		gpio_reset_pin(CONFIG_SDSPI_POWER);
 		/* Set the GPIO as a push/pull output */
-		gpio_set_direction(PIN_POWER, GPIO_MODE_OUTPUT);
-		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", PIN_POWER);
-		gpio_set_level(PIN_POWER, 1);
+		gpio_set_direction(CONFIG_SDSPI_POWER, GPIO_MODE_OUTPUT);
+		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", CONFIG_SDSPI_POWER);
+		gpio_set_level(CONFIG_SDSPI_POWER, 1);
 		vTaskDelay(3000 / portTICK_PERIOD_MS);
 	}
 #endif

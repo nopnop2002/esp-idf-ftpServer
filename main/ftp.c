@@ -90,33 +90,40 @@ static const ftp_cmd_t ftp_cmd_table[] = { { "FEAT" }, { "SYST" }, { "CDUP" }, {
 // ==== PRIVATE FUNCTIONS ===================================================
 
 uint64_t mp_hal_ticks_ms() {
-	uint64_t time_ms = xTaskGetTickCount() * portTICK_RATE_MS;
+	uint64_t time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
 	return time_ms;
 }
 
 int network_get_active_interfaces()
 {
+	ESP_LOGI(FTP_TAG, "network_get_active_interfaces");
 	int n_if = 0;
 
+#if 0
 	for (int i=0; i<MAX_ACTIVE_INTERFACES; i++) {
 		tcpip_if[i] = TCPIP_ADAPTER_IF_MAX;
 	}
+#endif
 	//if ((wifi_network_state == WIFI_STATE_STARTED) && (wifi_is_started())) {
 		wifi_mode_t mode;
 		esp_err_t ret = esp_wifi_get_mode(&mode);
 		if (ret == ESP_OK) {
 			if (mode == WIFI_MODE_STA) {
 				n_if = 1;
-				tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
+				//tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
+				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
 			}
 			else if (mode == WIFI_MODE_AP) {
 				n_if = 1;
-				tcpip_if[0] = TCPIP_ADAPTER_IF_AP;
+				//tcpip_if[0] = TCPIP_ADAPTER_IF_AP;
+				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_APDEF");
 			}
 			else if (mode == WIFI_MODE_APSTA) {
 				n_if = 2;
-				tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
-				tcpip_if[1] = TCPIP_ADAPTER_IF_AP;
+				//tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
+				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
+				//tcpip_if[1] = TCPIP_ADAPTER_IF_AP;
+				net_if[1] = esp_netif_get_handle_from_ifkey("WIFI_APDEF");
 			}
 		}
 	//}
@@ -413,7 +420,8 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 
 	if (ip_addr) {
 		// check on which network interface the client was connected and save the IP address
-		tcpip_adapter_ip_info_t ip_info = {0};
+		//tcpip_adapter_ip_info_t ip_info = {0};
+		esp_netif_ip_info_t ip_info;
 		int n_if = network_get_active_interfaces();
 
 		if (n_if > 0) {
@@ -423,11 +431,15 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 			ESP_LOGI(FTP_TAG, "Client IP: %08x", clientAddr.sin_addr.s_addr);
 			*ip_addr = 0;
 			for (int i=0; i<n_if; i++) {
-				tcpip_adapter_get_ip_info(tcpip_if[i], &ip_info);
+				//tcpip_adapter_get_ip_info(tcpip_if[i], &ip_info);
+				esp_netif_get_ip_info(net_if[i], &ip_info);
 				ESP_LOGI(FTP_TAG, "Adapter: %08x, %08x", ip_info.ip.addr, ip_info.netmask.addr);
 				if ((ip_info.ip.addr & ip_info.netmask.addr) == (ip_info.netmask.addr & clientAddr.sin_addr.s_addr)) {
 					*ip_addr = ip_info.ip.addr;
-					ESP_LOGI(FTP_TAG, "Client connected on interface %d", tcpip_if[i]);
+					//ESP_LOGI(FTP_TAG, "Client connected on interface %d", net_if[i]);
+					char name[8];
+					esp_netif_get_netif_impl_name(net_if[i], name);
+					ESP_LOGI(FTP_TAG, "Client connected on interface %s", name);
 					break;
 				}
 			}
@@ -463,7 +475,7 @@ static void ftp_send_reply (uint32_t status, char *message) {
 	ftp_result_t result;
 	uint32_t size = strlen((char *)ftp_cmd_buffer);
 
-	ESP_LOGI(FTP_TAG, "Send reply: [%s]", ftp_cmd_buffer);
+	ESP_LOGI(FTP_TAG, "Send reply: [%.*s]", size-2, ftp_cmd_buffer);
 	vTaskDelay(1);
 
 	while (1) {
@@ -1180,7 +1192,8 @@ int ftp_run (uint32_t elapsed)
 					ftp_data.loggin.passvalid = false;
 					strcpy (ftp_path, "/");
 					ESP_LOGI(FTP_TAG, "Connected.");
-					ftp_send_reply (220, "Micropython FTP Server");
+					//ftp_send_reply (220, "Micropython FTP Server");
+					ftp_send_reply (220, "ESP32 FTP Server");
 					break;
 				}
 			}

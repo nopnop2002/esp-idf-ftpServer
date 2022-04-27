@@ -12,38 +12,18 @@ This is because this version supports ESP32-C3.
 Flash size is required at 4M.   
 __Models with a Flash Size 2M, such as the ESP32-C3-2M, cannot be used.__   
 
-# Installation for ESP32
+# Installation
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpServer
 cd esp-idf-ftpServer/
-idf.py set-target esp32
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
 idf.py menuconfig
 idf.py flash monitor
 ```
 
-# Installation for ESP32-S2
+__If you need more storage space on FLASH, you need to modify partitions.csv.__   
 
-```
-git clone https://github.com/nopnop2002/esp-idf-ftpServer
-cd esp-idf-ftpServer/
-idf.py set-target esp32s2
-idf.py menuconfig
-idf.py flash monitor
-```
-
-# Installation for ESP32-C3
-
-```
-git clone https://github.com/nopnop2002/esp-idf-ftpServer
-cd esp-idf-ftpServer/
-idf.py set-target esp32c3
-idf.py menuconfig
-idf.py flash monitor
-```
-
-
-# Configure
-You have to set this config value with menuconfig.   
+# Configuration
 
 ![config-main](https://user-images.githubusercontent.com/6020549/107847756-a4aa2900-6e31-11eb-9525-6fd82bead5a3.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/127939325-1b565ef7-9045-4800-95ad-0153342b5fc1.jpg)
@@ -53,7 +33,7 @@ ESP32 supports the following file systems.
 You can select any one using menuconfig.   
 - FAT file system on FLASH   
 - FAT file system on SPI peripheral SDCARD   
-- FAT file system on SDMMC peripheral SDCARD   
+- FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
 
 Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
 
@@ -64,9 +44,8 @@ Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it becau
 ![config-filesystem-2](https://user-images.githubusercontent.com/6020549/150039095-a3fd9c2d-55a8-4314-a825-01990a62cb61.jpg)
 
 ### FAT file system on SDMMC peripheral SDCARD   
-SDMMC can only be used with ESP32.   
 You can select 1 Line Mode & SD card speed.   
-SDMMC 4Line mode is difficult to use on the ESP32. (see below)   
+It is difficult to use the SDMMC 4Line mode on the ESP32. (see below)   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/140200541-e693e5df-acd0-42bc-9c90-ab47ed6885a9.jpg)
 
 ## WiFi Setting
@@ -82,23 +61,27 @@ You can use static IP.
 ## FTP Server Setting
 ![config-server](https://user-images.githubusercontent.com/6020549/127940653-0d54f2ca-5dee-4c97-a7e7-276299237a41.jpg)
 
+
+
 # Using FAT file system on SPI peripheral SDCARD
 __Must be formatted with FAT32 before use__
 
-|ESP32 pin|SPI pin|Notes|
-|:-:|:-:|:--|
-|GPIO16|MISO||
-|GPIO13|CS|||
-|GPIO14|SCK||
-|GPIO15|MOSI|10k pullup if can't mount|
-|3.3V|VCC|Don't use 5V supply|
-|GND|GND||
+|ESP32|ESP32S2/S3|ESP32C3|SPI card pin|Notes|
+|:-:|:-:|:-:|:-:|:--|
+|GPIO23|GPIO35|GPIO04|MOSI|10k pullup if can't mount|
+|GPIO19|GPIO37|GPIO06|MISO||
+|GPIO18|GPIO36|GPIO05|SCK||
+|GPIO14|GPIO34|GPIO01|CS|||
+|3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
+|GND|GND|GND|GND||
 
-This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
-In SPI mode, pins can be customized.   
+__You can change it to any pin using menuconfig.__   
+
+Note:   
+This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
+
 
 # Using FAT file system on SDMMC peripheral SDCARD
-__Must be formatted with FAT32 before use__
 
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -108,20 +91,32 @@ __Must be formatted with FAT32 before use__
 |GPIO4|D1|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO12|D2|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
-|N/C|CD|optional, not used in the example|
-|N/C|WP|optional, not used in the example|
+|N/C|CD|not used in this project|
+|N/C|WP|not used in this project|
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
-This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
-ESP32-S2 doesn't include SD Host peripheral and only supports SD over SPI.   
+|ESP32-S3 pin|SD card pin|Notes|
+|:-:|:-:|:--|
+|GPIO36|CLK|10k pullup|
+|GPIO35|CMD|10k pullup|
+|GPIO37|D0|10k pullup|
+|GPIO38|D1|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
+|GPIO33|D2|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
+|GPIO34|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
+|N/C|CD|not used in this project|
+|N/C|WP|not used in this project|
+|3.3V|VCC|Don't use 5V supply|
+|GND|GND||
 
-# Note about GPIO2 (ESP32 only)   
+
+
+## Note about GPIO2 (ESP32 only)   
 GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode. One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
 
 - Some boards have pulldown and/or LED on GPIO2. LED is usually ok, but pulldown will interfere with D0 signals and must be removed. Check the schematic of your development board for anything connected to GPIO2.
 
-# Note about GPIO12 (ESP32 only)   
+## Note about GPIO12 (ESP32 only)   
 GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO). This pin has an internal pulldown so if left unconnected it will read low at reset (selecting default 3.3V operation). When adding a pullup to this pin for SD card operation, consider the following:
 
 - For boards which don't use the internal regulator (VDD_SDIO) to power the flash, GPIO12 can be pulled high.

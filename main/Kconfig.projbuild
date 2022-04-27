@@ -2,219 +2,210 @@ menu "FTP Server Configuration"
 
 	menu "File System Selection"
 
-	config GPIO_RANGE_MAX
-		int
-		default 33 if IDF_TARGET_ESP32
-		default 46 if IDF_TARGET_ESP32S2
-		default 19 if IDF_TARGET_ESP32C3
-		default 48 if IDF_TARGET_ESP32S3
+		config GPIO_RANGE_MAX
+			int
+			default 33 if IDF_TARGET_ESP32
+			default 46 if IDF_TARGET_ESP32S2
+			default 19 if IDF_TARGET_ESP32C3
+			default 48 if IDF_TARGET_ESP32S3
 
-	choice FILE_SYSTEM
-		prompt "File System Selection"
-		default FLASH
-		help
-			Select File System.
-		config FLASH
-			bool "FAT File System on FLASH"
+		choice FILE_SYSTEM
+			prompt "File System Selection"
+			default FLASH
 			help
-				Use FAT File System on FLASH.
-		config SPI_SDCARD
-			bool "FAT File System on SPI SDCARD"
-			help
-				Use FAT File System on SPI SDCARD.
-		config MMC_SDCARD
-			depends on IDF_TARGET_ESP32
-			bool "FAT File System on MMC SDCARD"
-			help
-				Use FAT File System on MMC SDCARD.
-	endchoice
+				Select File System.
+			config FLASH
+				bool "FAT File System on FLASH"
+				help
+					Use FAT File System on FLASH.
+			config SPI_SDCARD
+				bool "FAT File System on SPI SDCARD"
+				help
+					Use FAT File System on SPI SDCARD.
+			config MMC_SDCARD
+				depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3
+				bool "FAT File System on MMC SDCARD"
+				help
+					Use FAT File System on MMC SDCARD.
+		endchoice
 
-	config SDMMC_ONE_LINE_MODE
-		depends on MMC_SDCARD
-		bool "USE 1-line SD mode"
-		default false
-		help
-			Use only 1-line (true) or 4-lines (false, defalut) SD mode.
-			The 4-lines mode is faster but not all SD slots support it.
-			If you have trouble mounting an SD card, set this parameter to true.
-
-	choice SDMMC_SPEED
-		depends on MMC_SDCARD
-		prompt "SD card MMC speed"
-		default SDMMC_SPEED_HIGH
-		help
-			SD card speed. High values may cause SD card operation to be unstable.
-		config SDMMC_SPEED_52M
-			bool "52 KHz"
+		config SDMMC_ONE_LINE_MODE
+			depends on MMC_SDCARD
+			bool "USE 1-line SD mode"
+			default false
 			help
-				Very high speed.
-		config SDMMC_SPEED_26M
-			bool "26 KHz"
+				Use only 1-line (true) or 4-lines (false, defalut) SD mode.
+				The 4-lines mode is faster but not all SD slots support it.
+				If you have trouble mounting an SD card, set this parameter to true.
+
+		choice SDMMC_SPEED
+			depends on MMC_SDCARD
+			prompt "SD card MMC speed"
+			default SDMMC_SPEED_HIGH
 			help
-				Higher speed.
-		config SDMMC_SPEED_HIGH
-			bool "40 KHz"
+				SD card speed. High values may cause SD card operation to be unstable.
+			config SDMMC_SPEED_52M
+				bool "52 KHz"
+				help
+					Very high speed.
+			config SDMMC_SPEED_26M
+				bool "26 KHz"
+				help
+					Higher speed.
+			config SDMMC_SPEED_HIGH
+				bool "40 KHz"
+				help
+					High speed.
+			config SDMMC_SPEED_DEFAULT
+				bool "20 KHz"
+				help
+					Default speed.
+			config SDMMC_SPEED_PROBING
+				bool "0.4 KHz"
+				help
+					Probing speed.
+		endchoice
+
+		config SDSPI_MOSI
+			depends on SPI_SDCARD
+			int "MOSI GPIO number"
+			range 0 GPIO_RANGE_MAX
+			default 23 if IDF_TARGET_ESP32
+			default 35 if IDF_TARGET_ESP32S2
+			default 35 if IDF_TARGET_ESP32S3
+			default 4  # C3 and others
 			help
-				High speed.
-		config SDMMC_SPEED_DEFAULT
-			bool "20 KHz"
+				GPIO number (IOxx) to SPI MOSI.
+
+		config SDSPI_CLK
+			depends on SPI_SDCARD
+			int "CLK GPIO number"
+			range 0 GPIO_RANGE_MAX
+			default 18 if IDF_TARGET_ESP32
+			default 36 if IDF_TARGET_ESP32S2
+			default 36 if IDF_TARGET_ESP32S3
+			default 5  # C3 and others
 			help
-				Default speed.
-		config SDMMC_SPEED_PROBING
-			bool "0.4 KHz"
+				GPIO number (IOxx) to SPI SCLK.
+
+		config SDSPI_MISO
+			depends on SPI_SDCARD
+			int "MISO GPIO number"
+			range 0 GPIO_RANGE_MAX
+			default 19 if IDF_TARGET_ESP32
+			default 37 if IDF_TARGET_ESP32S2
+			default 37 if IDF_TARGET_ESP32S3
+			default 6  # C3 and others
 			help
-				Probing speed.
-	endchoice
+				GPIO number (IOxx) to SPI MISO.
 
-	config MISO_GPIO
-		depends on SPI_SDCARD
-		int "MISO GPIO number"
-		range 0 GPIO_RANGE_MAX
-		default 19 if IDF_TARGET_ESP32
-		default 33 if IDF_TARGET_ESP32S2
-		default 3  if IDF_TARGET_ESP32C3
-		help
-			GPIO number (IOxx) to SPI MISO.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MISO.
+		config SDSPI_CS
+			depends on SPI_SDCARD
+			int "CS GPIO number"
+			range 0 GPIO_RANGE_MAX
+			default 14 if IDF_TARGET_ESP32
+			default 34 if IDF_TARGET_ESP32S2
+			default 34 if IDF_TARGET_ESP32S3
+			default 1  # C3 and others
+			help
+				GPIO number (IOxx) to SPI CS.
 
-	 config MOSI_GPIO
-		depends on SPI_SDCARD
-		int "MOSI GPIO number"
-		range 0 GPIO_RANGE_MAX
-		default 23 if IDF_TARGET_ESP32
-		default 35 if IDF_TARGET_ESP32S2
-		default 19 if IDF_TARGET_ESP32C3
-		help
-			GPIO number (IOxx) to SPI MOSI.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to MOSI.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
-
-	 config SCLK_GPIO
-		depends on SPI_SDCARD
-		int "SCLK GPIO number"
-		range 0 GPIO_RANGE_MAX
-		default 18 if IDF_TARGET_ESP32
-		default 36 if IDF_TARGET_ESP32S2
-		default 18 if IDF_TARGET_ESP32C3
-		help
-			GPIO number (IOxx) to SPI SCLK.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to SCLK.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
-
-	 config CS_GPIO
-		depends on SPI_SDCARD
-		int "CS GPIO number"
-		range 0 GPIO_RANGE_MAX
-		default 14 if IDF_TARGET_ESP32
-		default 34 if IDF_TARGET_ESP32S2
-		default 9  if IDF_TARGET_ESP32C3
-		help
-			GPIO number (IOxx) to SPI CS.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to CS.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
-
-	 config POWER_GPIO
-		depends on SPI_SDCARD
-		int "POWER GPIO number"
-		range -1 GPIO_RANGE_MAX
-		default -1 if IDF_TARGET_ESP32
-		default 14 if IDF_TARGET_ESP32S2
-		default -1 if IDF_TARGET_ESP32C3
-		help
-			GPIO number (IOxx) to SPI POWER.
-			When it is -1, the POWER isn't performed.
-			Some GPIOs are used for other purposes (flash connections, etc.) and cannot be used to POWER.
-			On the ESP32, GPIOs 35-39 are input-only so cannot be used as outputs.
-			On the ESP32-S2, GPIO 46 is input-only so cannot be used as outputs.
+		config SDSPI_POWER
+			depends on SPI_SDCARD
+			int "POWER GPIO number"
+			range -1 GPIO_RANGE_MAX
+			default -1 if IDF_TARGET_ESP32
+			default 14 if IDF_TARGET_ESP32S2
+			default -1 if IDF_TARGET_ESP32S3
+			default -1 # C3 and others
+			help
+				GPIO number (IOxx) to SPI POWER.
+				When it is -1, the POWER isn't performed.
 
 	endmenu
 
 	menu "WiFi Setting"
 
-	config ESP_WIFI_SSID
-		string "WiFi SSID"
-		default "myssid"
-		help
-			SSID (network name) for the example to connect to.
+		config ESP_WIFI_SSID
+			string "WiFi SSID"
+			default "myssid"
+			help
+				SSID (network name) to connect to.
 
-	config ESP_WIFI_PASSWORD
-		string "WiFi Password"
-		default "mypassword"
-		help
-			WiFi password (WPA or WPA2) for the example to use.
+		config ESP_WIFI_PASSWORD
+			string "WiFi Password"
+			default "mypassword"
+			help
+				WiFi password (WPA or WPA2) to connect to.
 
-	config ESP_MAXIMUM_RETRY
-		int "Maximum retry"
-		default 5
-		help
-			Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+		config ESP_MAXIMUM_RETRY
+			int "Maximum retry"
+			default 5
+			help
+				Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
 
-	config MDNS_HOSTNAME
-		string "mDNS Hostname"
-		default "ftp-server"
-		help
-			mDNS Hostname for FTP Server.
+		config MDNS_HOSTNAME
+			string "mDNS Hostname"
+			default "ftp-server"
+			help
+				mDNS Hostname for FTP Server.
 
-	config STATIC_IP
-		bool "Enable Static IP Address"
-		default false
-		help
-			Enable Static IP Address.
+		config STATIC_IP
+			bool "Enable Static IP Address"
+			default false
+			help
+				Enable Static IP Address.
 
-	config STATIC_IP_ADDRESS
-		depends on STATIC_IP
-		string "Static IP Address"
-		default "192.168.10.100"
-		help
-			Static IP Address for Station.
+		config STATIC_IP_ADDRESS
+			depends on STATIC_IP
+			string "Static IP Address"
+			default "192.168.10.100"
+			help
+				Static IP Address for Station.
 
-	config STATIC_GW_ADDRESS
-		depends on STATIC_IP
-		string "Static GW Address"
-		default "192.168.10.1"
-		help
-			Static GW Address for Station.
+		config STATIC_GW_ADDRESS
+			depends on STATIC_IP
+			string "Static GW Address"
+			default "192.168.10.1"
+			help
+				Static GW Address for Station.
 
-	config STATIC_NM_ADDRESS
-		depends on STATIC_IP
-		string "Static Netmask"
-		default "255.255.255.0"
-		help
-			Static Netmask for Statione.
+		config STATIC_NM_ADDRESS
+			depends on STATIC_IP
+			string "Static Netmask"
+			default "255.255.255.0"
+			help
+				Static Netmask for Statione.
 
-	config NTP_SERVER
-		string "NTP Server"
-		default "pool.ntp.org"
-		help
-			Hostname for NTP Server.
+		config NTP_SERVER
+			string "NTP Server"
+			default "pool.ntp.org"
+			help
+				Hostname for NTP Server.
 
-	config LOCAL_TIMEZONE
-		int "Your TimeZone"
-		range 0 23
-		default 0
-		help
-			Your local timezone. When it is 0, Greenwich Mean Time.
-
+		config LOCAL_TIMEZONE
+			int "Your TimeZone"
+			range 0 23
+			default 0
+			help
+				Your local timezone. When it is 0, Greenwich Mean Time.
 
 	endmenu
 
 
 	menu "FTP Server Setting"
 
-	config FTP_USER
-		string "FTP User Name"
-		default "esp32"
-		help
-			FTP User name for this Server.
+		config FTP_USER
+			string "FTP User Name"
+			default "esp32"
+			help
+				FTP User name for this Server.
 
-	config FTP_PASSWORD
-		string "FTP Password"
-		default "esp32"
-		help
-			FTP Password for this Server.
+		config FTP_PASSWORD
+			string "FTP Password"
+			default "esp32"
+			help
+				FTP Password for this Server.
 
 	endmenu
 

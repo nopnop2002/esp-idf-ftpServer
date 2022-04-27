@@ -170,7 +170,8 @@ typedef enum {
 #define MICROPY_ALLOC_PATH_MAX (512)
 
 #define MAX_ACTIVE_INTERFACES   3
-tcpip_adapter_if_t tcpip_if[MAX_ACTIVE_INTERFACES] = {TCPIP_ADAPTER_IF_MAX};
+//tcpip_adapter_if_t tcpip_if[MAX_ACTIVE_INTERFACES] = {TCPIP_ADAPTER_IF_MAX};
+esp_netif_t *net_if[MAX_ACTIVE_INTERFACES];
 
 #define VFS_NATIVE_MOUNT_POINT          "/_#!#_spiffs"
 #define VFS_NATIVE_SDCARD_MOUNT_POINT   "/_#!#_sdcard"
