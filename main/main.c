@@ -380,9 +380,9 @@ void app_main(void)
 	ESP_ERROR_CHECK(esp_netif_get_ip_info(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"), &ip_info));
 
 	/* Print the local IP address */
-	ESP_LOGI(TAG, "IP Address : ", IPSTR, IP2STR(&ip_info.ip));
-	ESP_LOGI(TAG, "Subnet mask: ", IPSTR, IP2STR(&ip_info.netmask));
-	ESP_LOGI(TAG, "Gateway		: ", IPSTR, IP2STR(&ip_info.gw));
+	ESP_LOGI(TAG, "IP Address : " IPSTR, IP2STR(&ip_info.ip));
+	ESP_LOGI(TAG, "Subnet mask: " IPSTR, IP2STR(&ip_info.netmask));
+	ESP_LOGI(TAG, "Gateway		: " IPSTR, IP2STR(&ip_info.gw));
 
 	// obtain time over NTP
 	ESP_LOGI(TAG, "Getting time over NTP.");
