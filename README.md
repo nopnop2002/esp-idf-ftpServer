@@ -8,15 +8,24 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 esp-idf v4.4 or later.   
 This is because this version supports ESP32-C3.   
 
-# Hardware requiment   
-Flash size is required at 4M.   
-__Models with a Flash Size 2M, such as the ESP32-C3-2M, cannot be used.__   
-
-# Installation
+# Installation for 4M Flash like ESP32
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpServer
 cd esp-idf-ftpServer/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
+cp partitions_example.csv.esp32 partitions_example.csv
+idf.py set-target {esp32/esp32s2/esp32s3}
+idf.py menuconfig
+idf.py flash monitor
+```
+
+__If you need more storage space on FLASH, you need to modify partitions.csv.__   
+
+# Installation for 2M Flash like ESP32C3
+```
+git clone https://github.com/nopnop2002/esp-idf-ftpServer
+cd esp-idf-ftpServer/
+cp partitions_example.csv.esp32c3 partitions_example.csv
+idf.py set-target esp32c
 idf.py menuconfig
 idf.py flash monitor
 ```
@@ -201,3 +210,6 @@ void ftp_task (void *pvParameters)
   ESP_LOGI(FTP_TAG, "ftp_user:[%s] ftp_pass:[%s]", ftp_user, ftp_pass);
 ```
 
+
+# Reference
+https://github.com/nopnop2002/esp-idf-ftpClient
