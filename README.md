@@ -95,7 +95,7 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 |:-:|:-:|:--|
 |GPIO14|CLK|10k pullup|
 |GPIO15|CMD|10k pullup|
-|GPIO2|D0|10k pullup|
+|GPIO2|D0|10k pullup or connect to GPIO0|
 |GPIO4|D1|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO12|D2|not used in 1-line SD mode; 10k pullup in 4-line SD mode|
 |GPIO13|D3|not used in 1-line SD mode, but card's D3 pin must have a 10k pullup
