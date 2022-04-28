@@ -46,7 +46,6 @@ You can select any one using menuconfig.
 
 Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
 
-### FAT file system on FLASH   
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/165684095-d1fd8f77-afb7-466e-9eda-061776e8b9f9.jpg)
 ![config-filesystem-2](https://user-images.githubusercontent.com/6020549/165684099-6d1a9563-17a3-49ba-a995-2ce400633cde.jpg)
 
@@ -79,7 +78,7 @@ You can use static IP.
 |3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
 |GND|GND|GND|GND||
 
-![config-filesystem-SDSPI](https://user-images.githubusercontent.com/6020549/165684261-1e38c266-b5ae-43a9-891e-13ac76b8dff1.jpg)
+![config-filesystem-SDSPI](https://user-images.githubusercontent.com/6020549/165686735-21461822-f19e-47d5-aedc-b91401670098.jpg)
 
 __You can change it to any pin using menuconfig.__   
 

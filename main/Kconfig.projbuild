@@ -94,17 +94,6 @@ menu "FTP Server Configuration"
 			help
 				GPIO number (IOxx) to SPI MOSI.
 
-		config SDSPI_CLK
-			depends on SPI_SDCARD
-			int "CLK GPIO number"
-			range 0 GPIO_RANGE_MAX
-			default 18 if IDF_TARGET_ESP32
-			default 36 if IDF_TARGET_ESP32S2
-			default 36 if IDF_TARGET_ESP32S3
-			default 5  # C3 and others
-			help
-				GPIO number (IOxx) to SPI SCLK.
-
 		config SDSPI_MISO
 			depends on SPI_SDCARD
 			int "MISO GPIO number"
@@ -115,6 +104,17 @@ menu "FTP Server Configuration"
 			default 6  # C3 and others
 			help
 				GPIO number (IOxx) to SPI MISO.
+
+		config SDSPI_CLK
+			depends on SPI_SDCARD
+			int "CLK GPIO number"
+			range 0 GPIO_RANGE_MAX
+			default 18 if IDF_TARGET_ESP32
+			default 36 if IDF_TARGET_ESP32S2
+			default 36 if IDF_TARGET_ESP32S3
+			default 5  # C3 and others
+			help
+				GPIO number (IOxx) to SPI SCLK.
 
 		config SDSPI_CS
 			depends on SPI_SDCARD
