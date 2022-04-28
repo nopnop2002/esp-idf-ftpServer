@@ -214,38 +214,32 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 
 	ESP_LOGI(TAG, "Using SDMMC peripheral");
 	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
-#if CONFIG_SDMMC_SPEED_52M
-	host.max_freq_khz = SDMMC_FREQ_52M;
-#elif CONFIG_SDMMC_SPEED_26M
-	host.max_freq_khz = SDMMC_FREQ_26M;
-#elif CONFIG_SDMMC_SPEED_HIGH
-	host.max_freq_khz = SDMMC_FREQ_HIGHSPEED;
-#elif CONFIG_SDMMC_SPEED_DEFAULT
-	host.max_freq_khz = SDMMC_FREQ_DEFAULT;
-#elif CONFIG_SDMMC_SPEED_PROBING
-	host.max_freq_khz = SDMMC_FREQ_PROBING;
-#endif	/* CONFIG_SDMMC_SPEED */
 
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
-	// To use 1-line SD mode, uncomment the following line:
-#if CONFIG_SDMMC_ONE_LINE_MODE
-	slot_config.width = 1;
-#else
+	// Set bus width to use:
+#ifdef CONFIG_SDMMC_BUS_WIDTH_4
+	ESP_LOGI(TAG, "SDMMC 4 line mode");
 	slot_config.width = 4;
-#endif // CONFIG_SDMMC_ONE_LINE_MODE
+#else
+	ESP_LOGI(TAG, "SDMMC 1 line mode");
+	slot_config.width = 1;
+#endif
 
 	// On chips where the GPIOs used for SD card can be configured, set them in
 	// the slot_config structure:
 #ifdef SOC_SDMMC_USE_GPIO_MATRIX
-	slot_config.clk = GPIO_NUM_14;
-	slot_config.cmd = GPIO_NUM_15;
-	slot_config.d0 = GPIO_NUM_2;
-	slot_config.d1 = GPIO_NUM_4;
-	slot_config.d2 = GPIO_NUM_12;
-	slot_config.d3 = GPIO_NUM_13;
+	ESP_LOGI(TAG, "SOC_SDMMC_USE_GPIO_MATRIX");
+	slot_config.clk = CONFIG_SDMMC_CLK; //GPIO_NUM_36;
+	slot_config.cmd = CONFIG_SDMMC_CMD; //GPIO_NUM_35;
+	slot_config.d0 = CONFIG_SDMMC_D0; //GPIO_NUM_37;
+#ifdef CONFIG_SDMMC_BUS_WIDTH_4
+	slot_config.d1 = CONFIG_SDMMC_D1; //GPIO_NUM_38;
+	slot_config.d2 = CONFIG_SDMMC_D2; //GPIO_NUM_33;
+	slot_config.d3 = CONFIG_SDMMC_D3; //GPIO_NUM_34;
+#endif // CONFIG_SDMMC_BUS_WIDTH_4
 #endif // SOC_SDMMC_USE_GPIO_MATRIX
 
 	// Enable internal pullups on enabled pins. The internal pullups
@@ -253,6 +247,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// connected on the bus. This is for debug / example purpose only.
 	slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
+	ESP_LOGI(TAG, "Mounting filesystem");
 	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
 
 #else
@@ -382,7 +377,7 @@ void app_main(void)
 	/* Print the local IP address */
 	ESP_LOGI(TAG, "IP Address : " IPSTR, IP2STR(&ip_info.ip));
 	ESP_LOGI(TAG, "Subnet mask: " IPSTR, IP2STR(&ip_info.netmask));
-	ESP_LOGI(TAG, "Gateway		: " IPSTR, IP2STR(&ip_info.gw));
+	ESP_LOGI(TAG, "Gateway    : " IPSTR, IP2STR(&ip_info.gw));
 
 	// obtain time over NTP
 	ESP_LOGI(TAG, "Getting time over NTP.");

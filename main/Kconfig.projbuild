@@ -29,42 +29,59 @@ menu "FTP Server Configuration"
 					Use FAT File System on MMC SDCARD.
 		endchoice
 
-		config SDMMC_ONE_LINE_MODE
+		choice SDMMC_BUS_WIDTH
 			depends on MMC_SDCARD
-			bool "USE 1-line SD mode"
-			default false
+			prompt "SD/MMC bus width"
+			default SDMMC_BUS_WIDTH_1
 			help
-				Use only 1-line (true) or 4-lines (false, defalut) SD mode.
-				The 4-lines mode is faster but not all SD slots support it.
-				If you have trouble mounting an SD card, set this parameter to true.
+				Select the bus width of SD or MMC interface.
+				Note that even if 1 line mode is used, D3 pin of the SD card must have a pull-up resistor connected.
+				Otherwise the card may enter SPI mode, the only way to recover from which is to cycle power to the card.
 
-		choice SDMMC_SPEED
-			depends on MMC_SDCARD
-			prompt "SD card MMC speed"
-			default SDMMC_SPEED_HIGH
-			help
-				SD card speed. High values may cause SD card operation to be unstable.
-			config SDMMC_SPEED_52M
-				bool "52 KHz"
-				help
-					Very high speed.
-			config SDMMC_SPEED_26M
-				bool "26 KHz"
-				help
-					Higher speed.
-			config SDMMC_SPEED_HIGH
-				bool "40 KHz"
-				help
-					High speed.
-			config SDMMC_SPEED_DEFAULT
-				bool "20 KHz"
-				help
-					Default speed.
-			config SDMMC_SPEED_PROBING
-				bool "0.4 KHz"
-				help
-					Probing speed.
+			config SDMMC_BUS_WIDTH_4
+				bool "4 lines (D0 - D3)"
+
+			config SDMMC_BUS_WIDTH_1
+				bool "1 line (D0)"
 		endchoice
+
+		if SOC_SDMMC_USE_GPIO_MATRIX
+
+			config SDMMC_CMD
+				depends on MMC_SDCARD
+				int "CMD GPIO number"
+				default 35 if IDF_TARGET_ESP32S3
+
+			config SDMMC_CLK
+				depends on MMC_SDCARD
+				int "CLK GPIO number"
+				default 36 if IDF_TARGET_ESP32S3
+
+			config SDMMC_D0
+				depends on MMC_SDCARD
+				int "D0 GPIO number"
+				default 37 if IDF_TARGET_ESP32S3
+
+			if SDMMC_BUS_WIDTH_4
+
+				config SDMMC_D1
+					depends on MMC_SDCARD
+					int "D1 GPIO number"
+					default 38 if IDF_TARGET_ESP32S3
+
+				config SDMMC_D2
+					depends on MMC_SDCARD
+					int "D2 GPIO number"
+					default 33 if IDF_TARGET_ESP32S3
+
+				config SDMMC_D3
+					depends on MMC_SDCARD
+					int "D3 GPIO number"
+					default 34 if IDF_TARGET_ESP32S3
+
+			endif  # EXAMPLE_SDMMC_BUS_WIDTH_4
+
+		endif  # SOC_SDMMC_USE_GPIO_MATRIX
 
 		config SDSPI_MOSI
 			depends on SPI_SDCARD

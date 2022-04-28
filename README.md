@@ -47,15 +47,11 @@ You can select any one using menuconfig.
 Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
 
 ### FAT file system on FLASH   
-![config-filesystem-1](https://user-images.githubusercontent.com/6020549/127939717-05ffd887-1b50-4912-bd8b-9386098eca35.jpg)
+![config-filesystem-1](https://user-images.githubusercontent.com/6020549/165684095-d1fd8f77-afb7-466e-9eda-061776e8b9f9.jpg)
+![config-filesystem-2](https://user-images.githubusercontent.com/6020549/165684099-6d1a9563-17a3-49ba-a995-2ce400633cde.jpg)
 
-### FAT file system on SPI peripheral SDCARD   
-![config-filesystem-2](https://user-images.githubusercontent.com/6020549/150039095-a3fd9c2d-55a8-4314-a825-01990a62cb61.jpg)
-
-### FAT file system on SDMMC peripheral SDCARD   
-You can select 1 Line Mode & SD card speed.   
-It is difficult to use the SDMMC 4Line mode on the ESP32. (see below)   
-![config-filesystem-3](https://user-images.githubusercontent.com/6020549/140200541-e693e5df-acd0-42bc-9c90-ab47ed6885a9.jpg)
+Note:   
+The connection when using SDSPI, SDMMC will be described later.   
 
 ## WiFi Setting
 ![config-wifi-1](https://user-images.githubusercontent.com/6020549/127940375-f19519f0-88ce-407a-aa83-a00de776689e.jpg)
@@ -83,13 +79,19 @@ You can use static IP.
 |3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
 |GND|GND|GND|GND||
 
+![config-filesystem-SDSPI](https://user-images.githubusercontent.com/6020549/165684261-1e38c266-b5ae-43a9-891e-13ac76b8dff1.jpg)
+
 __You can change it to any pin using menuconfig.__   
 
 Note:   
-This example doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
+This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
 
 
 # Using FAT file system on SDMMC peripheral SDCARD
+
+On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX.   
+__GPIO pins cannot be customized.__   
+Please see the table below for the pin connections.
 
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -104,6 +106,12 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
+![config-filesystem-SDMMC-ESP32](https://user-images.githubusercontent.com/6020549/165684959-8370ae90-8f5c-40e6-961d-7a21b48a9ae5.jpg)
+
+
+On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix.   
+__This allows arbitrary GPIOs to be used to connect an SD card.__   
+
 |ESP32-S3 pin|SD card pin|Notes|
 |:-:|:-:|:--|
 |GPIO36|CLK|10k pullup|
@@ -117,6 +125,7 @@ This example doesn't utilize card detect (CD) and write protect (WP) signals fro
 |3.3V|VCC|Don't use 5V supply|
 |GND|GND||
 
+![config-filesystem-SDMMC-ESP32S3](https://user-images.githubusercontent.com/6020549/165685227-6d78e26f-e7e3-4dc4-8aba-6d47d6c15b62.jpg)
 
 
 ## Note about GPIO2 (ESP32 only)   
