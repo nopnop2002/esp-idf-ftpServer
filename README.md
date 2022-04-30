@@ -18,7 +18,7 @@ idf.py menuconfig
 idf.py flash monitor
 ```
 
-__If you need more storage space on FLASH, you need to modify partitions.csv.__   
+__If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
 # Installation for 2M Flash like ESP32C3
 ```
@@ -30,7 +30,7 @@ idf.py menuconfig
 idf.py flash monitor
 ```
 
-__If you need more storage space on FLASH, you need to modify partitions.csv.__   
+__If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
 # Configuration
 
