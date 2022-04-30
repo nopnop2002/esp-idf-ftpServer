@@ -43,6 +43,8 @@ You can select any one using menuconfig.
 - FAT file system on FLASH   
 - FAT file system on SPI peripheral SDCARD   
 - FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
+- FAT file system on SPI Flash Memory like Winbond W25Q64(Not supported in this project)   
+- FAT file system on USB Memory Stick(Not supported in this project)   
 
 Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
 
