@@ -8,29 +8,26 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 esp-idf v4.4 or later.   
 This is because this version supports ESP32-C3.   
 
-# Installation for 4M Flash like ESP32
+# Installation
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpServer
 cd esp-idf-ftpServer/
-cp partitions_example.csv.esp32 partitions_example.csv
-idf.py set-target {esp32/esp32s2/esp32s3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
 idf.py menuconfig
 idf.py flash monitor
 ```
 
 __If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
-# Installation for 2M Flash like ESP32C3
+# Partition table
 ```
-git clone https://github.com/nopnop2002/esp-idf-ftpServer
-cd esp-idf-ftpServer/
-cp partitions_example.csv.esp32c3 partitions_example.csv
-idf.py set-target esp32c
-idf.py menuconfig
-idf.py flash monitor
+# Name,   Type, SubType, Offset,  Size, Flags
+# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+factory,  app,  factory, 0x10000, 1M,
+storage,  data, spiffs,         , 0xF0000,  ---> This is for FAT file system
 ```
-
-__If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
 
 # Configuration
 

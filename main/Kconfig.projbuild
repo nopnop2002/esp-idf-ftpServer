@@ -202,7 +202,7 @@ menu "FTP Server Configuration"
 
 		config LOCAL_TIMEZONE
 			int "Your TimeZone"
-			range 0 23
+			range -23 23
 			default 0
 			help
 				Your local timezone. When it is 0, Greenwich Mean Time.
