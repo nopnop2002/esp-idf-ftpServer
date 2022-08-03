@@ -30,6 +30,11 @@
 
 #include "lwip/dns.h"
 
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
+#define esp_vfs_fat_spiflash_mount esp_vfs_fat_spiflash_mount_rw_wl
+#define esp_vfs_fat_spiflash_unmount esp_vfs_fat_spiflash_unmount_rw_wl
+#endif
+
 static const char *TAG = "MAIN";
 static char *MOUNT_POINT = "/root";
 EventGroupHandle_t xEventTask;
@@ -282,6 +287,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.host_id = host.slot;
 
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
+	ESP_LOGI(TAG, "esp_vfs_fat_sdspi_mount=%d", ret);
 #endif // CONFIG_MMC_SDCARD
 
 	if (ret != ESP_OK) {
@@ -384,7 +390,7 @@ void app_main(void)
 	ret = obtain_time();
 	if(ret != ESP_OK) {
 		ESP_LOGE(TAG, "Fail to getting time over NTP.");
-		return;
+		while(1) { vTaskDelay(1); }
 	}
 
 	// update 'now' variable with current time
@@ -402,7 +408,9 @@ void app_main(void)
 	// Mount FAT File System on FLASH
 	char *partition_label = "storage";
 	wl_handle_t s_wl_handle = mountFLASH(partition_label, MOUNT_POINT);
-	if (s_wl_handle < 0) return;
+	if (s_wl_handle < 0) {
+		while(1) { vTaskDelay(1); }
+	};
 #endif 
 
 #if CONFIG_SPI_SDCARD
@@ -421,7 +429,9 @@ void app_main(void)
 	// Mount FAT File System on SDCARD
 	sdmmc_card_t card;
 	ret = mountSDCARD(MOUNT_POINT, &card);
-	if (ret != ESP_OK) return;
+	if (ret != ESP_OK) {
+		while(1) { vTaskDelay(1); }
+	};
 #endif 
 
 	// Create FTP server task

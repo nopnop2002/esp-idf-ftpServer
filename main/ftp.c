@@ -45,9 +45,9 @@
 
 #include "dirent.h"
 #include "esp_system.h"
-#include "esp_spi_flash.h"
+//#include "esp_spi_flash.h" // ESP-IDF V4
+#include "esp_flash.h" // ESP-IDF V5
 #include "nvs_flash.h"
-//#include "esp_event.h"
 #include "esp_log.h"
 
 #include "esp_wifi.h"
@@ -152,14 +152,15 @@ static void stoupper (char *str) {
 
 //--------------------------------------------------------------
 static bool ftp_open_file (const char *path, const char *mode) {
-	ESP_LOGI(FTP_TAG, "ftp_open_file path=[%s]", path);
+	ESP_LOGI(FTP_TAG, "ftp_open_file: path=[%s]", path);
 	char fullname[128];
 	strcpy(fullname, MOUNT_POINT);
 	strcat(fullname, path);
-	ESP_LOGI(FTP_TAG, "ftp_open_file fullname=[%s]", fullname);
+	ESP_LOGI(FTP_TAG, "ftp_open_file: fullname=[%s]", fullname);
 	//ftp_data.fp = fopen(path, mode);
 	ftp_data.fp = fopen(fullname, mode);
 	if (ftp_data.fp == NULL) {
+		ESP_LOGE(FTP_TAG, "ftp_open_file: open fail [%s]", fullname);
 		return false;
 	}
 	ftp_data.e_open = E_FTP_FILE_OPEN;
@@ -585,7 +586,9 @@ static ftp_result_t ftp_recv_non_blocking (int32_t sd, void *buff, int32_t Maxle
 // ==== Directory functions =======================
 
 //-----------------------------------
+#if 0
 static void ftp_fix_path(char *pwd) {
+	ESP_LOGI(FTP_TAG, "ftp_fix_path: pwd=[%s]", pwd);
 	char ph_path[128];
 	uint len = strlen(pwd);
 
@@ -596,16 +599,23 @@ static void ftp_fix_path(char *pwd) {
 
 	// Convert to physical path
 	if (strstr(pwd, VFS_NATIVE_INTERNAL_MP) == pwd) {
+		ESP_LOGI(FTP_TAG, "ftp_fix_path: VFS_NATIVE_INTERNAL_MP=[%s]", VFS_NATIVE_INTERNAL_MP);
 		sprintf(ph_path, "%s%s", VFS_NATIVE_MOUNT_POINT, pwd+strlen(VFS_NATIVE_INTERNAL_MP));
 		if (strcmp(ph_path, VFS_NATIVE_MOUNT_POINT) == 0) strcat(ph_path, "/");
+		ESP_LOGI(FTP_TAG, "ftp_fix_path: ph_path=[%s]", ph_path);
 		strcpy(pwd, ph_path);
 	}
 	else if (strstr(pwd, VFS_NATIVE_EXTERNAL_MP) == pwd) {
+		ESP_LOGI(FTP_TAG, "ftp_fix_path: VFS_NATIVE_EXTERNAL_MP=[%s]", VFS_NATIVE_EXTERNAL_MP);
 		sprintf(ph_path, "%s%s", VFS_NATIVE_SDCARD_MOUNT_POINT, pwd+strlen(VFS_NATIVE_EXTERNAL_MP));
 		if (strcmp(ph_path, VFS_NATIVE_SDCARD_MOUNT_POINT) == 0) strcat(ph_path, "/");
+		ESP_LOGI(FTP_TAG, "ftp_fix_path: ph_path=[%s]", ph_path);
 		strcpy(pwd, ph_path);
 	}
 }
+#endif
+
+
 /*
  * Add directory or file name to the current path
  * Initially, pwd is set to "/" (file system root)
@@ -630,7 +640,9 @@ static void ftp_open_child (char *pwd, char *dir) {
 			// append directory/file name
 			strcat(pwd, dir);
 		}
+#if 0
 		ftp_fix_path(pwd);
+#endif
 	}
 	ESP_LOGI(FTP_TAG, "open_child, New pwd: %s", pwd);
 }
@@ -677,8 +689,10 @@ static void remove_fname_from_path (char *pwd, char *fname) {
 
 	xpwd[0] = '\0';
 
+#if 0
 	ftp_fix_path(pwd);
-	ESP_LOGI(FTP_TAG, "remove_fname_from_path, New pwd: %s", pwd);
+#endif
+	ESP_LOGI(FTP_TAG, "remove_fname_from_path: New pwd: %s", pwd);
 }
 
 // ==== Param functions =================================================
@@ -820,6 +834,7 @@ static void ftp_process_cmd (void) {
 		case E_FTP_CMD_XPWD:
 			{
 				char lpath[128];
+#if 0
 				if (strstr(ftp_path, VFS_NATIVE_MOUNT_POINT) == ftp_path) {
 					sprintf(lpath, "%s%s", VFS_NATIVE_INTERNAL_MP, ftp_path+strlen(VFS_NATIVE_MOUNT_POINT));
 				}
@@ -827,6 +842,8 @@ static void ftp_process_cmd (void) {
 					sprintf(lpath, "%s%s", VFS_NATIVE_EXTERNAL_MP, ftp_path+strlen(VFS_NATIVE_SDCARD_MOUNT_POINT));
 				}
 				else strcpy(lpath,ftp_path);
+#endif
+				strcpy(lpath,ftp_path);
 
 				ftp_send_reply(257, lpath);
 			}
@@ -1091,7 +1108,7 @@ static void ftp_process_cmd (void) {
 	else if (result == E_FTP_RESULT_CONTINUE) {
 		if (ftp_data.ctimeout > ftp_timeout) {
 			ftp_send_reply(221, NULL);
-			ESP_LOGI(FTP_TAG, "Connection timeout");
+			ESP_LOGW(FTP_TAG, "Connection timeout");
 		}
 	}
 	else {
