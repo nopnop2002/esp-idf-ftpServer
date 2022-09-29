@@ -145,7 +145,7 @@ By default, FATFS file names can be up to 8 characters long.
 If you use filenames longer than 8 characters, you need to change the values below.   
 ![config_long_file_name_support-1](https://user-images.githubusercontent.com/6020549/193048975-318a5a78-24de-4656-ab7c-161b55962ce6.jpg)
 ![config_long_file_name_support-2](https://user-images.githubusercontent.com/6020549/193048987-7ffe34f1-1c3a-46a2-a614-6382d2d4c2c0.jpg)
-![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/193059963-b883c577-f6ed-4450-b01b-fc00fa9c9afd.jpg)
+![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/193061099-03d0fb7e-6af9-489b-8666-5c9e7dd15467.jpg)
 
 # Limitations   
 - The server does not support multiple connections.   
