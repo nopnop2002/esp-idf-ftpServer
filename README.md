@@ -140,6 +140,13 @@ GPIO12 is used as a bootstrapping pin to select output voltage of an internal re
     * In most cases, external pullup can be omitted and an internal pullup can be enabled using a `gpio_pullup_en(GPIO_NUM_12);` call. Most SD cards work fine when an internal pullup on GPIO12 line is enabled. Note that if ESP32 experiences a power-on reset while the SD card is sending data, high level on GPIO12 can be latched into the bootstrapping register, and ESP32 will enter a boot loop until external reset with correct GPIO12 level is applied.
     * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
 
+# Using long file name support   
+By default, FATFS file names can be up to 8 characters long.   
+If you use filenames longer than 8 characters, you need to change the values below.   
+![config_long_file_name_support-1](https://user-images.githubusercontent.com/6020549/193048975-318a5a78-24de-4656-ab7c-161b55962ce6.jpg)
+![config_long_file_name_support-2](https://user-images.githubusercontent.com/6020549/193048987-7ffe34f1-1c3a-46a2-a614-6382d2d4c2c0.jpg)
+![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/193059963-b883c577-f6ed-4450-b01b-fc00fa9c9afd.jpg)
+
 # Limitations   
 - The server does not support multiple connections.   
 - The server does not support active connection.    
@@ -170,11 +177,6 @@ GPIO12 is used as a bootstrapping pin to select output voltage of an internal re
    * QUIT
    * APPE
    * NLST
-- By default, FATFS file names can be up to 8 characters long.   
- If you use filenames longer than 8 characters, you need to change the values below.   
-![config_long_file_name_support-1](https://user-images.githubusercontent.com/6020549/193048975-318a5a78-24de-4656-ab7c-161b55962ce6.jpg)
-![config_long_file_name_support-2](https://user-images.githubusercontent.com/6020549/193048987-7ffe34f1-1c3a-46a2-a614-6382d2d4c2c0.jpg)
-![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/193059963-b883c577-f6ed-4450-b01b-fc00fa9c9afd.jpg)
 
 # Using LilyGo ESP32-S2
 The LilyGo ESP32-S2 development board has a micro SD card slot on the board.   
