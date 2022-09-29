@@ -170,9 +170,10 @@ GPIO12 is used as a bootstrapping pin to select output voltage of an internal re
    * QUIT
    * APPE
    * NLST
-- FATFS file names can be up to 8 characters long.   
- If you put a file name longer than 8 characters, you need to specify the remote file name like this.   
- put sdkconfig sdkconf   
+- By default, FATFS file names can be up to 8 characters long.   
+ If you use filenames longer than 8 characters, you need to change the values below.   
+![config_long_file_name_support-1](https://user-images.githubusercontent.com/6020549/193048975-318a5a78-24de-4656-ab7c-161b55962ce6.jpg)
+![config_long_file_name_support-2](https://user-images.githubusercontent.com/6020549/193048987-7ffe34f1-1c3a-46a2-a614-6382d2d4c2c0.jpg)
 
 # Using LilyGo ESP32-S2
 The LilyGo ESP32-S2 development board has a micro SD card slot on the board.   
