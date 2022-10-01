@@ -3,6 +3,7 @@ FTP Server for esp-idf using FAT file system.
 I found [this](https://www.esp32.com/viewtopic.php?f=13&t=5013#p21738) information.   
 So, I ported from [here](https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/libs/ftp.c).   
 Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
+Also, compared to SPIFFS, writing is about three times faster.   
 
 # Software requirements
 esp-idf v4.4 or later.   
