@@ -55,12 +55,27 @@ The connection when using SDSPI, SDMMC will be described later.
 ## WiFi Setting
 ![config-wifi-1](https://user-images.githubusercontent.com/6020549/127940375-f19519f0-88ce-407a-aa83-a00de776689e.jpg)
 
-You can connect using mDNS.   
+You can connect using the mDNS hostname instead of the IP address.   
 ![config-wifi-2](https://user-images.githubusercontent.com/6020549/127940382-d431c962-746e-45d7-9693-3f844c0b01d3.jpg)
 
 You can use static IP.   
 ![config-wifi-3](https://user-images.githubusercontent.com/6020549/127940390-3edfb3ea-6545-4709-9786-3e8a944e5ac7.jpg)
 
+## Using mDNS hostname
+- esp-idf V4.3 or earlier   
+ You will need to manually change the mDNS strict mode according to [this](https://github.com/espressif/esp-idf/issues/6190) instruction.   
+- esp-idf V4.4  
+ If you set CONFIG_MDNS_STRICT_MODE = y in sdkconfig.defaults, the firmware will be built with MDNS_STRICT_MODE.   
+ __If MDNS_STRICT_MODE is not set, mDNS name resolution will not be possible after long-term operation.__   
+- esp-idf V4.4.1   
+ mDNS component has been updated.   
+ If you set CONFIG_MDNS_STRICT_MODE = y in sdkconfig.defaults, the firmware will be built with MDNS_STRICT_MODE.   
+ __Even if MDNS_STRICT_MODE is set, mDNS name resolution will not be possible after long-term operation.__   
+- esp-idf V5.0 or later   
+ mDNS component has been updated.   
+ Long-term operation is possible without setting MDNS_STRICT_MODE.   
+ The following lines in sdkconfig.defaults should be removed before menuconfig.   
+ ```CONFIG_MDNS_STRICT_MODE=y```
 
 ## FTP Server Setting
 ![config-server](https://user-images.githubusercontent.com/6020549/127940653-0d54f2ca-5dee-4c97-a7e7-276299237a41.jpg)
