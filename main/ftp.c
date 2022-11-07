@@ -30,6 +30,8 @@
  * Copyright (c) 2017, LoBo
  */
 
+#include <stdio.h>
+#include <inttypes.h>
 #include <stdint.h>
 #include <string.h>
 #include <ctype.h>
@@ -274,9 +276,9 @@ static int ftp_get_eplf_item (char *dest, uint32_t destsize, struct dirent *de) 
 
 	while (addsize >= destsize) {
 		if (ftp_nlist) addsize = snprintf(dest, destsize, "%s\r\n", de->d_name);
-		else addsize = snprintf(dest, destsize, "%srw-rw-rw-   1 root  root %9u %s %s\r\n", type, (uint32_t)buf.st_size, str_time, de->d_name);
+		else addsize = snprintf(dest, destsize, "%srw-rw-rw-   1 root  root %9"PRIu32" %s %s\r\n", type, (uint32_t)buf.st_size, str_time, de->d_name);
 		if (addsize >= destsize) {
-			ESP_LOGW(FTP_TAG, "Buffer too small, reallocating [%d > %d]", ftp_buff_size, ftp_buff_size + (addsize - destsize) + 64);
+			ESP_LOGW(FTP_TAG, "Buffer too small, reallocating [%d > %"PRIi32"]", ftp_buff_size, ftp_buff_size + (addsize - destsize) + 64);
 			char *new_dest = realloc(dest, ftp_buff_size + (addsize - destsize) + 65);
 			if (new_dest) {
 				ftp_buff_size += (addsize - destsize) + 64;
@@ -429,12 +431,12 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 			struct sockaddr_in clientAddr;
 			in_addrSize = sizeof(struct sockaddr_in);
 			getpeername(_sd, (struct sockaddr *)&clientAddr, (socklen_t *)&in_addrSize);
-			ESP_LOGI(FTP_TAG, "Client IP: %08x", clientAddr.sin_addr.s_addr);
+			ESP_LOGI(FTP_TAG, "Client IP: 0x%08"PRIx32, clientAddr.sin_addr.s_addr);
 			*ip_addr = 0;
 			for (int i=0; i<n_if; i++) {
 				//tcpip_adapter_get_ip_info(tcpip_if[i], &ip_info);
 				esp_netif_get_ip_info(net_if[i], &ip_info);
-				ESP_LOGI(FTP_TAG, "Adapter: %08x, %08x", ip_info.ip.addr, ip_info.netmask.addr);
+				ESP_LOGI(FTP_TAG, "Adapter: 0x%08"PRIx32", 0x%08"PRIx32, ip_info.ip.addr, ip_info.netmask.addr);
 				if ((ip_info.ip.addr & ip_info.netmask.addr) == (ip_info.netmask.addr & clientAddr.sin_addr.s_addr)) {
 					*ip_addr = ip_info.ip.addr;
 					//ESP_LOGI(FTP_TAG, "Client connected on interface %d", net_if[i]);
@@ -467,14 +469,15 @@ static void ftp_send_reply (uint32_t status, char *message) {
 	if (!message) {
 		message = "";
 	}
-	snprintf((char *)ftp_cmd_buffer, 4, "%u", status);
+	snprintf((char *)ftp_cmd_buffer, 4, "%"PRIu32, status);
 	strcat ((char *)ftp_cmd_buffer, " ");
 	strcat ((char *)ftp_cmd_buffer, message);
 	strcat ((char *)ftp_cmd_buffer, "\r\n");
 
 	int32_t timeout = 200;
 	ftp_result_t result;
-	uint32_t size = strlen((char *)ftp_cmd_buffer);
+	//uint32_t size = strlen((char *)ftp_cmd_buffer);
+	size_t size = strlen((char *)ftp_cmd_buffer);
 
 	ESP_LOGI(FTP_TAG, "Send reply: [%.*s]", size-2, ftp_cmd_buffer);
 	vTaskDelay(1);
@@ -519,7 +522,7 @@ static void ftp_send_list(uint32_t datasize)
 	int32_t timeout = 200;
 	ftp_result_t result;
 
-	ESP_LOGI(FTP_TAG, "Send list data: (%u)", datasize);
+	ESP_LOGI(FTP_TAG, "Send list data: (%"PRIu32")", datasize);
 	vTaskDelay(1);
 
 	while (1) {
@@ -548,7 +551,7 @@ static void ftp_send_file_data(uint32_t datasize)
 	ftp_result_t result;
 	uint32_t timeout = 200;
 
-	ESP_LOGI(FTP_TAG, "Send file data: (%u)", datasize);
+	ESP_LOGI(FTP_TAG, "Send file data: (%"PRIu32")", datasize);
 	vTaskDelay(1);
 
 	while (1) {
@@ -857,7 +860,7 @@ static void ftp_process_cmd (void) {
 				int res = stat(fullname, &buf);
 				if (res == 0) {
 					// send the file size
-					snprintf((char *)ftp_data.dBuffer, ftp_buff_size, "%u", (uint32_t)buf.st_size);
+					snprintf((char *)ftp_data.dBuffer, ftp_buff_size, "%"PRIu32, (uint32_t)buf.st_size);
 					ftp_send_reply(213, (char *)ftp_data.dBuffer);
 				} else {
 					ftp_send_reply(550, NULL);
@@ -1255,12 +1258,12 @@ int ftp_run (uint32_t elapsed)
 					if (readsize > 0) {
 						ftp_send_file_data(readsize);
 						ftp_data.total += readsize;
-						ESP_LOGI(FTP_TAG, "Sent %u, total: %u", readsize, ftp_data.total);
+						ESP_LOGI(FTP_TAG, "Sent %"PRIu32", total: %"PRIu32, readsize, ftp_data.total);
 					}
 					if (result == E_FTP_RESULT_OK) {
 						ftp_send_reply(226, NULL);
 						ftp_data.state = E_FTP_STE_END_TRANSFER;
-						ESP_LOGI(FTP_TAG, "File sent (%u bytes in %u msek).", ftp_data.total, ftp_data.time);
+						ESP_LOGI(FTP_TAG, "File sent (%"PRIu32" bytes in %"PRIu32" msec).", ftp_data.total, ftp_data.time);
 					}
 				}
 			}
@@ -1283,7 +1286,7 @@ int ftp_run (uint32_t elapsed)
 					}
 					else {
 						ftp_data.total += len;
-						ESP_LOGI(FTP_TAG, "Received %u, total: %u", len, ftp_data.total);
+						ESP_LOGI(FTP_TAG, "Received %"PRIu32", total: %"PRIu32, len, ftp_data.total);
 					}
 				}
 				else if (result == E_FTP_RESULT_CONTINUE) {
@@ -1300,7 +1303,7 @@ int ftp_run (uint32_t elapsed)
 					ftp_close_files_dir();
 					ftp_send_reply(226, NULL);
 					ftp_data.state = E_FTP_STE_END_TRANSFER;
-					ESP_LOGI(FTP_TAG, "File received (%u bytes in %u msek).", ftp_data.total, ftp_data.time);
+					ESP_LOGI(FTP_TAG, "File received (%"PRIu32" bytes in %"PRIu32" msec).", ftp_data.total, ftp_data.time);
 					break;
 				}
 			}
@@ -1319,7 +1322,7 @@ int ftp_run (uint32_t elapsed)
 			ESP_LOGI(FTP_TAG, "Data socket connected");
 		}
 		else if (ftp_data.dtimeout > FTP_DATA_TIMEOUT_MS) {
-			ESP_LOGW(FTP_TAG, "Waiting for data connection timeout (%d)", ftp_data.dtimeout);
+			ESP_LOGW(FTP_TAG, "Waiting for data connection timeout (%"PRIi32")", ftp_data.dtimeout);
 			ftp_data.dtimeout = 0;
 			// close the listening socket
 			closesocket(ftp_data.ld_sd);

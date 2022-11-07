@@ -8,6 +8,7 @@
 */
 
 #include <stdio.h>
+#include <inttypes.h>
 #include <string.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
@@ -189,7 +190,7 @@ wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
 		return -1;
 	}
 	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
-	ESP_LOGI(TAG, "s_wl_handle=%d",s_wl_handle);
+	ESP_LOGI(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
 	return s_wl_handle;
 }
 #endif // CONFIG_FLASH
