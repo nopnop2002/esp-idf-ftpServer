@@ -6,7 +6,7 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 Also, compared to SPIFFS, writing is about three times faster.   
 
 # Software requirements
-esp-idf v4.4 or later.   
+esp-idf v4.4/v5.0.   
 This is because this version supports ESP32-C3.   
 
 # Installation
