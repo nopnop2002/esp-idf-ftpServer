@@ -49,6 +49,11 @@ Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it becau
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/165684095-d1fd8f77-afb7-466e-9eda-061776e8b9f9.jpg)
 ![config-filesystem-2](https://user-images.githubusercontent.com/6020549/165684099-6d1a9563-17a3-49ba-a995-2ce400633cde.jpg)
 
+When using MMC SDCARD, you can select 1 Line mode or 4 Line mode.   
+![config-filesystem-3](https://user-images.githubusercontent.com/6020549/222020427-d1dd2c40-955d-46ca-b32f-3e8b8439778a.jpg)
+![config-filesystem-4](https://user-images.githubusercontent.com/6020549/222020434-e54cd185-1b1c-45eb-bdf8-44d2f627fe5f.jpg)
+
+
 Note:   
 The connection when using SDSPI, SDMMC will be described later.   
 
@@ -108,7 +113,9 @@ This project doesn't utilize card detect (CD) and write protect (WP) signals fro
 
 On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX.   
 __GPIO pins cannot be customized.__   
-Please see the table below for the pin connections.
+GPIO2 and GPIO12 cannot be changed.   
+So using 4-line SD mode with ESP32 is very tricky.   
+Please see the table below for the pin connections.   
 
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
