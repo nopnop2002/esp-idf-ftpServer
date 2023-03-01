@@ -170,6 +170,10 @@ Long File Name on FLASH.
 Long File Name on SDCARD.    
 ![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/222010920-9e3a34fd-d5f1-47a9-8dd3-3c8e7af00c87.jpg)
 
+Short File Name on SDCARD
+![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
+
+
 # Limitations   
 - The server does not support multiple connections.   
 - The server does not support active connection.    
@@ -210,10 +214,6 @@ It works very stably.
 
 ![LilyGo-esp32-s2-1](https://user-images.githubusercontent.com/6020549/107864770-00f96100-6ea3-11eb-8549-6885ae398111.JPG)
 ![LilyGo-esp32-s2-2](https://user-images.githubusercontent.com/6020549/127941181-63e48570-88ab-4d5b-8be7-343168079c4a.jpg)
-
-# Screen Shot   
-![ftp-srver-1](https://user-images.githubusercontent.com/6020549/107865100-9d713280-6ea6-11eb-94d2-4a249bd36a7b.jpg)
-![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
 
 # Windows ftp client
 I tested these client.   
