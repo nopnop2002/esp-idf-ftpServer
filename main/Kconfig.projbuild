@@ -143,6 +143,21 @@ menu "FTP Server Configuration"
 
 	menu "WiFi Setting"
 
+		choice WIFI_MODE
+			prompt "Wi-Fi Access mode"
+			default ST_MODE
+			help
+				Select Wi-Fi Access mode.
+			config ST_MODE
+				bool "Station MODE"
+				help
+					Wi-Fi is Station Mode.
+			config AP_MODE
+				bool "Access Point MODE"
+				help
+					Wi-Fi is Access Point Mode.
+		endchoice
+
 		config ESP_WIFI_SSID
 			string "WiFi SSID"
 			default "myssid"
@@ -155,19 +170,29 @@ menu "FTP Server Configuration"
 			help
 				WiFi password (WPA or WPA2) to connect to.
 
+		config ESP_MAX_STA_CONN
+			depends on AP_MODE
+			int "Maximum STA connections"
+			default 4
+			help
+				Max number of the STA connects to AP.
+
 		config ESP_MAXIMUM_RETRY
+			depends on ST_MODE
 			int "Maximum retry"
 			default 5
 			help
 				Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
 
 		config MDNS_HOSTNAME
+			depends on ST_MODE
 			string "mDNS Hostname"
 			default "ftp-server"
 			help
 				mDNS Hostname for FTP Server.
 
 		config STATIC_IP
+			depends on ST_MODE
 			bool "Enable Static IP Address"
 			default false
 			help
@@ -195,12 +220,14 @@ menu "FTP Server Configuration"
 				Static Netmask for Statione.
 
 		config NTP_SERVER
+			depends on ST_MODE
 			string "NTP Server"
 			default "pool.ntp.org"
 			help
 				Hostname for NTP Server.
 
 		config LOCAL_TIMEZONE
+			depends on ST_MODE
 			int "Your TimeZone"
 			range -23 23
 			default 0

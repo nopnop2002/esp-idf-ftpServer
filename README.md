@@ -6,14 +6,14 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 Also, compared to SPIFFS, writing is about three times faster.   
 
 # Software requirements
-esp-idf v4.4/v5.0.   
-This is because this version supports ESP32-C3.   
+ESP-IDF V4.4/V5.0.   
+ESP-IDF V5 is required when using ESP32-C2.   
 
 # Installation
 ```
 git clone https://github.com/nopnop2002/esp-idf-ftpServer
 cd esp-idf-ftpServer/
-idf.py set-target {esp32/esp32s2/esp32s3/esp32c3}
+idf.py set-target {esp32/esp32s2/esp32s3/esp32c2/esp32c3}
 idf.py menuconfig
 idf.py flash monitor
 ```
@@ -52,14 +52,19 @@ Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it becau
 Note:   
 The connection when using SDSPI, SDMMC will be described later.   
 
-## WiFi Setting
-![config-wifi-1](https://user-images.githubusercontent.com/6020549/127940375-f19519f0-88ce-407a-aa83-a00de776689e.jpg)
+## WiFi Setting for Station-MODE
+
+![config-wifi-sta](https://user-images.githubusercontent.com/6020549/222010634-3c6736ff-0d35-4982-9e6f-d56c7b7dc870.jpg)
 
 You can connect using the mDNS hostname instead of the IP address.   
 ![config-wifi-2](https://user-images.githubusercontent.com/6020549/127940382-d431c962-746e-45d7-9693-3f844c0b01d3.jpg)
 
 You can use static IP.   
 ![config-wifi-3](https://user-images.githubusercontent.com/6020549/127940390-3edfb3ea-6545-4709-9786-3e8a944e5ac7.jpg)
+
+## WiFi Setting for AccessPoint-MODE
+
+![config-wifi-ap](https://user-images.githubusercontent.com/6020549/222010670-4d0ab08f-857c-4828-98e4-3c42e39f6f2a.jpg)
 
 ## Using mDNS hostname
 - esp-idf V4.4  
@@ -159,11 +164,11 @@ By default, FATFS file names can be up to 8 characters long.
 If you use filenames longer than 8 characters, you need to change the values below.   
 ![config_long_file_name_support-1](https://user-images.githubusercontent.com/6020549/193048975-318a5a78-24de-4656-ab7c-161b55962ce6.jpg)
 
-Short File Name Screen Shot.   
-![config_long_file_name_support-2](https://user-images.githubusercontent.com/6020549/193048987-7ffe34f1-1c3a-46a2-a614-6382d2d4c2c0.jpg)
+Long File Name on FLASH.   
+![config_long_file_name_support-2](https://user-images.githubusercontent.com/6020549/222010888-7143b070-07b9-4128-80e0-0cc97f571f43.jpg)
 
-Long File Name Screen Shot.    
-![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/193061099-03d0fb7e-6af9-489b-8666-5c9e7dd15467.jpg)
+Long File Name on SDCARD.    
+![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/222010920-9e3a34fd-d5f1-47a9-8dd3-3c8e7af00c87.jpg)
 
 # Limitations   
 - The server does not support multiple connections.   
