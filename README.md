@@ -171,8 +171,7 @@ Long File Name on SDCARD.
 ![config_long_file_name_support-3](https://user-images.githubusercontent.com/6020549/222010920-9e3a34fd-d5f1-47a9-8dd3-3c8e7af00c87.jpg)
 
 Short File Name on SDCARD
-![ftp-srver-2](https://user-images.githubusercontent.com/6020549/107848057-fce22a80-6e33-11eb-8c67-471deb16e190.jpg)
-
+![config_long_file_name_support-4](https://user-images.githubusercontent.com/6020549/222018271-3752a39e-3b08-4244-8f28-0506ce612025.jpg)
 
 # Limitations   
 - The server does not support multiple connections.   
