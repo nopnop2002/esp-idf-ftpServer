@@ -31,7 +31,7 @@ storage,  data, spiffs,         , 0xF0000,  ---> This is for FAT file system
 ```
 
 If your ESP32 has 4M Flash, you can get more space by changing this.   
-The maximum partition size that can be specified for 4M Flash models is 0x2F0000 (=2,960K).   
+The maximum partition size of the FAT file system that can be specified on the 4M Flash model is 0x2F0000 (=2,960K).   
 ![config_flash_size](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/81926a15-2d4e-466f-a889-d118b92eba0d)
 
 # Configuration
