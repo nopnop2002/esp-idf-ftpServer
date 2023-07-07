@@ -118,14 +118,17 @@ int network_get_active_interfaces()
 			else if (mode == WIFI_MODE_AP) {
 				n_if = 1;
 				//tcpip_if[0] = TCPIP_ADAPTER_IF_AP;
-				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_APDEF");
+				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_AP_DEF");
 			}
 			else if (mode == WIFI_MODE_APSTA) {
 				n_if = 2;
 				//tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
 				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
 				//tcpip_if[1] = TCPIP_ADAPTER_IF_AP;
-				net_if[1] = esp_netif_get_handle_from_ifkey("WIFI_APDEF");
+				net_if[1] = esp_netif_get_handle_from_ifkey("WIFI_AP_DEF");
+			}
+			else {
+				ESP_LOGE(FTP_TAG, "esp_wifi_get_mode fail");
 			}
 		}
 	//}
@@ -426,6 +429,7 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 		//tcpip_adapter_ip_info_t ip_info = {0};
 		esp_netif_ip_info_t ip_info;
 		int n_if = network_get_active_interfaces();
+		ESP_LOGI(FTP_TAG, "network_get_active_interfaces n_if=%d", n_if);
 
 		if (n_if > 0) {
 			struct sockaddr_in clientAddr;
