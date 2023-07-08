@@ -129,7 +129,7 @@ menu "FTP Server Configuration"
 			int "POWER GPIO number"
 			range -1 GPIO_RANGE_MAX
 			default -1 if IDF_TARGET_ESP32
-			default 14 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+			default -1 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default -1 # C3 and others
 			help
 				GPIO number (IOxx) to SPI POWER.
