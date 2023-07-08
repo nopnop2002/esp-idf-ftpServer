@@ -1,5 +1,5 @@
 /*
- FTP Client example.
+ FTP Server example.
  This example code is in the Public Domain (or CC0 licensed, at your option.)
 
  Unless required by applicable law or agreed to in writing, this
@@ -35,6 +35,9 @@
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
 #define esp_vfs_fat_spiflash_mount esp_vfs_fat_spiflash_mount_rw_wl
 #define esp_vfs_fat_spiflash_unmount esp_vfs_fat_spiflash_unmount_rw_wl
+#define sntp_setoperatingmode esp_sntp_setoperatingmode
+#define sntp_setservername esp_sntp_setservername
+#define sntp_init esp_sntp_init
 #endif
 
 static const char *TAG = "MAIN";

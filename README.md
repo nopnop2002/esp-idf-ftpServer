@@ -96,12 +96,12 @@ You can use static IP.
 
 # Using FAT file system on SPI peripheral SDCARD
 
-|ESP32|ESP32S2/S3|ESP32C3|SPI card pin|Notes|
+|ESP32|ESP32S2/S3|ESP32C2/C3|SPI card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
-|GPIO23|GPIO35|GPIO04|MOSI|10k pullup if can't mount|
-|GPIO19|GPIO37|GPIO06|MISO||
-|GPIO18|GPIO36|GPIO05|SCK||
-|GPIO14|GPIO34|GPIO01|CS|||
+|GPIO23|GPIO35|GPIO01|MOSI|10k pullup if can't mount|
+|GPIO19|GPIO37|GPIO03|MISO||
+|GPIO18|GPIO36|GPIO02|SCK||
+|GPIO14|GPIO34|GPIO010|CS|||
 |3.3V|3.3V|3.3V|VCC|Don't use 5V supply|
 |GND|GND|GND|GND||
 
