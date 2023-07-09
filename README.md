@@ -6,8 +6,9 @@ Since it uses the FAT file system instead of SPIFFS, directory operations are po
 Also, compared to SPIFFS, writing is about three times faster.   
 
 # Software requirements
-ESP-IDF V4.4/V5.0.   
+ESP-IDF V4.4/V5.x.   
 ESP-IDF V5.0 is required when using ESP32-C2.   
+ESP-IDF V5.1 is required when using ESP32-C6.   
 
 # Installation
 ```
@@ -96,7 +97,7 @@ You can use static IP.
 
 # Using FAT file system on SPI peripheral SDCARD
 
-|ESP32|ESP32S2/S3|ESP32C2/C3|SPI card pin|Notes|
+|ESP32|ESP32S2/S3|ESP32C2/C3/C6|SPI card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
 |GPIO23|GPIO35|GPIO01|MOSI|10k pullup if can't mount|
 |GPIO19|GPIO37|GPIO03|MISO||
