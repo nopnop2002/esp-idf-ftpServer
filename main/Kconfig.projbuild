@@ -9,6 +9,7 @@ menu "FTP Server Configuration"
 			default 48 if IDF_TARGET_ESP32S3
 			default 18 if IDF_TARGET_ESP32C2
 			default 19 if IDF_TARGET_ESP32C3
+			default 30 if IDF_TARGET_ESP32C6
 
 		choice FILE_SYSTEM
 			prompt "File System Selection"
@@ -90,7 +91,7 @@ menu "FTP Server Configuration"
 			range 0 GPIO_RANGE_MAX
 			default 23 if IDF_TARGET_ESP32
 			default 35 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-			default 1  # C3 and others
+			default  1 # C3 and others
 			help
 				GPIO number (IOxx) to SPI MOSI.
 
@@ -100,7 +101,7 @@ menu "FTP Server Configuration"
 			range 0 GPIO_RANGE_MAX
 			default 19 if IDF_TARGET_ESP32
 			default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-			default 3  # C3 and others
+			default  3 # C3 and others
 			help
 				GPIO number (IOxx) to SPI MISO.
 
@@ -110,7 +111,7 @@ menu "FTP Server Configuration"
 			range 0 GPIO_RANGE_MAX
 			default 18 if IDF_TARGET_ESP32
 			default 36 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-			default 2  # C3 and others
+			default  2 # C3 and others
 			help
 				GPIO number (IOxx) to SPI SCLK.
 
@@ -120,7 +121,7 @@ menu "FTP Server Configuration"
 			range 0 GPIO_RANGE_MAX
 			default 14 if IDF_TARGET_ESP32
 			default 34 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-			default 10 # C3 and others
+			default  4 # C3 and others
 			help
 				GPIO number (IOxx) to SPI CS.
 
@@ -128,9 +129,7 @@ menu "FTP Server Configuration"
 			depends on SPI_SDCARD
 			int "POWER GPIO number"
 			range -1 GPIO_RANGE_MAX
-			default -1 if IDF_TARGET_ESP32
-			default -1 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
-			default -1 # C3 and others
+			default -1
 			help
 				GPIO number (IOxx) to SPI POWER.
 				When it is -1, the POWER isn't performed.
