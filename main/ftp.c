@@ -323,6 +323,7 @@ static ftp_result_t ftp_list_dir(char *list, uint32_t maxlistsize, uint32_t *lis
 	// read up to 8 directory items
 	while (((maxlistsize - next) > 64) && (listcount < 8)) {
 		de = readdir(ftp_data.dp);															// Read a directory item
+		ESP_LOGI(FTP_TAG, "readdir de=%p", de);
 		if (de == NULL) {
 			result = E_FTP_RESULT_OK;
 			break;																			// Break on error or end of dp
@@ -1432,7 +1433,7 @@ int32_t ftp_get_maxstack (void) {
 void ftp_task (void *pvParameters)
 {
 	ESP_LOGI(FTP_TAG, "ftp_task start");
-	esp_log_level_set(FTP_TAG, ESP_LOG_WARN); 
+	//esp_log_level_set(FTP_TAG, ESP_LOG_WARN); 
 	strcpy(ftp_user, CONFIG_FTP_USER);
 	strcpy(ftp_pass, CONFIG_FTP_PASSWORD);
 	ESP_LOGI(FTP_TAG, "ftp_user:[%s] ftp_pass:[%s]", ftp_user, ftp_pass);

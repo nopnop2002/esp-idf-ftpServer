@@ -28,7 +28,7 @@ __If you need more storage space on FLASH, you need to modify partitions_example
 nvs,      data, nvs,     0x9000,  0x6000,
 phy_init, data, phy,     0xf000,  0x1000,
 factory,  app,  factory, 0x10000, 1M,
-storage,  data, spiffs,         , 0xF0000,  ---> This is for FAT file system
+storage,  data, fat,            , 0xF0000,  ---> This is for FAT file system
 ```
 
 If your ESP32 has 4M Flash, you can get more space by changing this.   
