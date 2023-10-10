@@ -240,6 +240,15 @@ You need to make this setting when using FileZilla.
 - FFFTP   
 ![FFFTP](https://user-images.githubusercontent.com/6020549/110587181-ab208c00-81b6-11eb-9c41-95e3e1d67949.jpg)
 
+# Performance comparison between FATFS and SPIFFS   
+
+|File Syetem|Byte per Sector|Mode|Write Speed|
+|:-:|:-:|:-:|:-:|
+|FATFS|512|Safety|2KB/Sec|
+|FATFS|512|Performance|7KB/Sec|
+|FATFS|4096||60KB/Sec|
+|SPIFFS|||29KB/Sec|
+
 # Troubleshooting   
 I sometimes get this error when using external SPI SD card readers.   
 Requires a PullUp resistor.   
