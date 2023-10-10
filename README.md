@@ -242,7 +242,7 @@ You need to make this setting when using FileZilla.
 
 # Performance comparison between FATFS and SPIFFS on FLASH   
 
-|File Syetem|Byte per Sector|Mode|Write Speed|
+|File Syetem|Sector Size|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
 |FATFS|512|Safety|2KB/Sec|
 |FATFS|512|Performance|7KB/Sec|
