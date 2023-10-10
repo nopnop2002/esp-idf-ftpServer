@@ -240,7 +240,7 @@ You need to make this setting when using FileZilla.
 - FFFTP   
 ![FFFTP](https://user-images.githubusercontent.com/6020549/110587181-ab208c00-81b6-11eb-9c41-95e3e1d67949.jpg)
 
-# Performance comparison between FATFS and SPIFFS   
+# Performance comparison between FATFS and SPIFFS on FLASH   
 
 |File Syetem|Byte per Sector|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
@@ -248,6 +248,9 @@ You need to make this setting when using FileZilla.
 |FATFS|512|Performance|7KB/Sec|
 |FATFS|4096||60KB/Sec|
 |SPIFFS|||29KB/Sec|
+
+These items affect performance.   
+![config-wear-levelling](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/f8cb121c-d4c0-4fc7-9bda-9e8e621423c7)
 
 # Troubleshooting   
 I sometimes get this error when using external SPI SD card readers.   
