@@ -96,55 +96,6 @@ uint64_t mp_hal_ticks_ms() {
 	return time_ms;
 }
 
-int network_get_active_interfaces()
-{
-	ESP_LOGI(FTP_TAG, "network_get_active_interfaces");
-	int n_if = 0;
-
-#if 0
-	for (int i=0; i<MAX_ACTIVE_INTERFACES; i++) {
-		tcpip_if[i] = TCPIP_ADAPTER_IF_MAX;
-	}
-#endif
-	//if ((wifi_network_state == WIFI_STATE_STARTED) && (wifi_is_started())) {
-		wifi_mode_t mode;
-		esp_err_t ret = esp_wifi_get_mode(&mode);
-		if (ret == ESP_OK) {
-			if (mode == WIFI_MODE_STA) {
-				n_if = 1;
-				//tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
-				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
-			}
-			else if (mode == WIFI_MODE_AP) {
-				n_if = 1;
-				//tcpip_if[0] = TCPIP_ADAPTER_IF_AP;
-				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_AP_DEF");
-			}
-			else if (mode == WIFI_MODE_APSTA) {
-				n_if = 2;
-				//tcpip_if[0] = TCPIP_ADAPTER_IF_STA;
-				net_if[0] = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
-				//tcpip_if[1] = TCPIP_ADAPTER_IF_AP;
-				net_if[1] = esp_netif_get_handle_from_ifkey("WIFI_AP_DEF");
-			}
-			else {
-				ESP_LOGE(FTP_TAG, "esp_wifi_get_mode fail");
-			}
-		}
-	//}
-
-#if 0
-	#ifdef CONFIG_MICROPY_USE_ETHERNET
-	if (lan_eth_active) {
-		n_if++;
-		tcpip_if[n_if-1] = TCPIP_ADAPTER_IF_ETH;
-	}
-	#endif
-#endif
-
-	return n_if;
-}
-
 //--------------------------------
 static void stoupper (char *str) {
 	while (str && *str != '\0') {
@@ -429,35 +380,15 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 		// check on which network interface the client was connected and save the IP address
 		//tcpip_adapter_ip_info_t ip_info = {0};
 		esp_netif_ip_info_t ip_info;
-		int n_if = network_get_active_interfaces();
-		ESP_LOGI(FTP_TAG, "network_get_active_interfaces n_if=%d", n_if);
 
-		if (n_if > 0) {
-			struct sockaddr_in clientAddr;
-			in_addrSize = sizeof(struct sockaddr_in);
-			getpeername(_sd, (struct sockaddr *)&clientAddr, (socklen_t *)&in_addrSize);
-			ESP_LOGI(FTP_TAG, "Client IP: 0x%08"PRIx32, clientAddr.sin_addr.s_addr);
-			*ip_addr = 0;
-			for (int i=0; i<n_if; i++) {
-				//tcpip_adapter_get_ip_info(tcpip_if[i], &ip_info);
-				esp_netif_get_ip_info(net_if[i], &ip_info);
-				ESP_LOGI(FTP_TAG, "Adapter: 0x%08"PRIx32", 0x%08"PRIx32, ip_info.ip.addr, ip_info.netmask.addr);
-				if ((ip_info.ip.addr & ip_info.netmask.addr) == (ip_info.netmask.addr & clientAddr.sin_addr.s_addr)) {
-					*ip_addr = ip_info.ip.addr;
-					//ESP_LOGI(FTP_TAG, "Client connected on interface %d", net_if[i]);
-					char name[8];
-					esp_netif_get_netif_impl_name(net_if[i], name);
-					ESP_LOGI(FTP_TAG, "Client connected on interface %s", name);
-					break;
-				}
-			}
-			if (*ip_addr == 0) {
-				ESP_LOGE(FTP_TAG, "No IP address detected (?!)");
-			}
-		}
-		else {
-			ESP_LOGE(FTP_TAG, "No active interface (?!)");
-		}
+		struct sockaddr_in clientAddr, serverAddr;
+		in_addrSize = sizeof(struct sockaddr_in);
+		getpeername(_sd, (struct sockaddr *)&clientAddr, (socklen_t *)&in_addrSize);
+		getsockname(_sd, (struct sockaddr *)&serverAddr, (socklen_t *)&in_addrSize);
+		ESP_LOGI(FTP_TAG, "Client IP: 0x%08"PRIx32, clientAddr.sin_addr.s_addr);
+		ESP_LOGI(FTP_TAG, "Server IP: 0x%08"PRIx32, serverAddr.sin_addr.s_addr);
+		*ip_addr = serverAddr.sin_addr.s_addr;
+		//tcpip_adapter_get_ip_info(tcpip_if[i], &ip_info);
 	}
 
 	// enable non-blocking mode if not data channel connection
