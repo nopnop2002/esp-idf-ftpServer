@@ -378,9 +378,6 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 
 	if (ip_addr) {
 		// check on which network interface the client was connected and save the IP address
-		//tcpip_adapter_ip_info_t ip_info = {0};
-		esp_netif_ip_info_t ip_info;
-
 		struct sockaddr_in clientAddr, serverAddr;
 		in_addrSize = sizeof(struct sockaddr_in);
 		getpeername(_sd, (struct sockaddr *)&clientAddr, (socklen_t *)&in_addrSize);
@@ -388,7 +385,6 @@ static ftp_result_t ftp_wait_for_connection (int32_t l_sd, int32_t *n_sd, uint32
 		ESP_LOGI(FTP_TAG, "Client IP: 0x%08"PRIx32, clientAddr.sin_addr.s_addr);
 		ESP_LOGI(FTP_TAG, "Server IP: 0x%08"PRIx32, serverAddr.sin_addr.s_addr);
 		*ip_addr = serverAddr.sin_addr.s_addr;
-		//tcpip_adapter_get_ip_info(tcpip_if[i], &ip_info);
 	}
 
 	// enable non-blocking mode if not data channel connection

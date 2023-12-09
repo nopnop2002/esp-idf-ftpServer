@@ -250,10 +250,8 @@ wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
 	const esp_vfs_fat_mount_config_t mount_config = {
-		//.max_files = 4,
-		.max_files = 16,
-		//.max_files = 32,
 		.format_if_mount_failed = true,
+		.max_files = 4, // maximum number of files which can be open at the same time
 		.allocation_unit_size = CONFIG_WL_SECTOR_SIZE
 	};
 	wl_handle_t s_wl_handle;
@@ -278,9 +276,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// formatted in case when mounting fails.
 	esp_vfs_fat_sdmmc_mount_config_t mount_config = {
 		.format_if_mount_failed = true,
-		//.max_files = 5,
-		.max_files = 16,
-		//.max_files = 32,
+		.max_files = 4, // maximum number of files which can be open at the same time
 		.allocation_unit_size = 16 * 1024
 	};
 	//sdmmc_card_t* card;
