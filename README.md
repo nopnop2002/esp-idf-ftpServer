@@ -187,7 +187,7 @@ Long File Name on SDCARD.
 Short File Name on SDCARD
 ![config_long_file_name_support-6](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/078c40fd-3ed2-44ec-9bf6-cfcc24bf1265)
 
-# Changing sector size   
+# Changing sector size when using wear levelling library   
 By default, 512-byte sectors are used.   
 The 512-byte sector has Performance mode and Safety mode.   
 You can change it to 4096 byte sectors using menuconfig.   
