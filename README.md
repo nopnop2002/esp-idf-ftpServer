@@ -175,16 +175,17 @@ GPIO12 is used as a bootstrapping pin to select output voltage of an internal re
 By default, FATFS file names can be up to 8 characters long.   
 If you use filenames longer than 8 characters, you need to change the values below.   
 ![config_long_file_name_support-1](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/dbae8910-74c9-4702-bdd4-881246e3fb95)
-![config_long_file_name_support-2](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/fcdef00c-575e-4f14-8fa3-8ad3949dd25e)
+![config_long_file_name_support-2](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/75d1ea99-86ff-40c0-8ffc-8bd30b9fc32e)
+![config_long_file_name_support-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/6e381627-e6f4-494d-ad40-04a73b49727b)
 
 Long File Name on FLASH.   
-![config_long_file_name_support-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/ce976ddb-279a-4bda-83cb-401668700d0b)
+![config_long_file_name_support-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/9fad16b1-0be4-4394-9bf0-347cd408152c)
 
 Long File Name on SDCARD.    
-![config_long_file_name_support-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/75365b03-ef3b-4569-ba91-d75815e60f8f)
+![config_long_file_name_support-5](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/7a5912ae-c6e5-4fcd-8466-421d331d38f3)
 
 Short File Name on SDCARD
-![config_long_file_name_support-5](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/080df13b-e274-41eb-9493-8013e92cc50b)
+![config_long_file_name_support-6](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/078c40fd-3ed2-44ec-9bf6-cfcc24bf1265)
 
 # Changing sector size   
 By default, 512-byte sectors are used.   
