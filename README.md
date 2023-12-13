@@ -185,6 +185,25 @@ Long File Name on SDCARD.
 Short File Name on SDCARD
 ![config_long_file_name_support-4](https://user-images.githubusercontent.com/6020549/222018271-3752a39e-3b08-4244-8f28-0506ce612025.jpg)
 
+# Changing sector size   
+By default, 512-byte sectors are used.   
+The 512-byte sector has Performance mode and Safety mode.   
+You can change it to 4096 byte sectors using menuconfig.   
+
+![config-serctor-seize-1](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/a3b6bfe8-8f54-4b5b-9521-54f81391efcf)
+![config-serctor-seize-2](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/57806d78-0cb5-4f16-bdc0-0b72f28e0acf)
+![config-serctor-seize-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/6ef715e2-e8a7-455a-8cd4-53e2fbc0a093)
+![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5b5ba0a8-7924-45a3-8ba7-6cf9393a3f9f)
+
+
+The writing speed of each mode is as follows.   
+|File Syetem|Sector Size|Mode|Write Speed|
+|:-:|:-:|:-:|:-:|
+|FATFS|512|Safety|2KB/Sec|
+|FATFS|512|Performance|7KB/Sec|
+|FATFS|4096||60KB/Sec|
+|SPIFFS|||29KB/Sec|
+
 # Limitations   
 - The server does not support multiple connections.   
 - The server does not support active connection.    
@@ -239,18 +258,6 @@ You need to make this setting when using FileZilla.
 
 - FFFTP   
 ![FFFTP](https://user-images.githubusercontent.com/6020549/110587181-ab208c00-81b6-11eb-9c41-95e3e1d67949.jpg)
-
-# Performance comparison between FATFS and SPIFFS on FLASH   
-
-|File Syetem|Sector Size|Mode|Write Speed|
-|:-:|:-:|:-:|:-:|
-|FATFS|512|Safety|2KB/Sec|
-|FATFS|512|Performance|7KB/Sec|
-|FATFS|4096||60KB/Sec|
-|SPIFFS|||29KB/Sec|
-
-These items affect performance.   
-![config-wear-levelling](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/f8cb121c-d4c0-4fc7-9bda-9e8e621423c7)
 
 # Troubleshooting   
 I sometimes get this error when using external SPI SD card readers.   
