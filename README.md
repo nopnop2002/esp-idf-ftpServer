@@ -199,6 +199,7 @@ You can change it to 4096 byte sectors using menuconfig.
 
 # The writing speed of each mode   
 Using ESP32 and TOSHIBA EXCERIA 8GB Micro SD CARD   
+Long filename support (Long filename buffer in heap)   
 |File Syetem|Sector Size|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
 |FATFS|512|Safety|3.37KB/Sec|
