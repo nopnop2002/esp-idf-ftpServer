@@ -1205,6 +1205,7 @@ int ftp_run (uint32_t elapsed)
 				int32_t len;
 				ftp_result_t result = E_FTP_RESULT_OK;
 
+				ESP_LOGI(FTP_TAG, "ftp_buff_size=%d", ftp_buff_size);
 				result = ftp_recv_non_blocking(ftp_data.d_sd, ftp_data.dBuffer, ftp_buff_size, &len);
 				if (result == E_FTP_RESULT_OK) {
 					// block of data received

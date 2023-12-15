@@ -188,27 +188,26 @@ Short File Name on SDCARD
 ![config_long_file_name_support-6](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/078c40fd-3ed2-44ec-9bf6-cfcc24bf1265)
 
 # Changing sector size when using wear levelling library   
-By default, 512-byte sectors are used.   
+By default, 4096-byte sectors are used.   
+You can change it to 512-byte sectors using menuconfig.   
 The 512-byte sector has Performance mode and Safety mode.   
-You can change it to 4096 byte sectors using menuconfig.   
 
 ![config-serctor-seize-1](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/a3b6bfe8-8f54-4b5b-9521-54f81391efcf)
 ![config-serctor-seize-2](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/57806d78-0cb5-4f16-bdc0-0b72f28e0acf)
-![config-serctor-seize-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/6ef715e2-e8a7-455a-8cd4-53e2fbc0a093)
-![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5b5ba0a8-7924-45a3-8ba7-6cf9393a3f9f)
+![config-serctor-seize-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/31ca5556-b3bf-41ab-b566-17849acd2837)
+![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5bc89f87-16b6-487d-a400-ebcb0fb94573)
 
 # The writing speed of each mode   
 Using ESP32 and SanDisk Ultra 16GB Micro SD CARD.   
 Enable Long filename support (Long filename buffer in heap).   
 |File Syetem|Sector Size|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
-|FATFS|512|Safety|3.37 kB/s|
-|FATFS|512|Performance|12.55 kB/s|
-|FATFS|4096||62.37 kB/s|
-|SDSPI|4096||138.8970 kB/s|
-|SDMMC|4096|1Line|158.7612 kB/s|
-|SDMMC|4096|4Line|169.4510 kB/s|
-|SPIFFS|||29 kB/s|
+|FATFS|512|Safety|3.7428 kB/s|
+|FATFS|512|Performance|12.7535 kB/s|
+|FATFS|4096||79.7797 kB/s|
+|SDSPI|4096||167.7897 kB/s|
+|SDMMC|4096|1Line|167.1615 kB/s|
+|SDMMC|4096|4Line|167.8869 kB/s|
 
 
 # Limitations   
