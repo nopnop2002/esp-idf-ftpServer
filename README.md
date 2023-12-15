@@ -197,14 +197,17 @@ You can change it to 4096 byte sectors using menuconfig.
 ![config-serctor-seize-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/6ef715e2-e8a7-455a-8cd4-53e2fbc0a093)
 ![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5b5ba0a8-7924-45a3-8ba7-6cf9393a3f9f)
 
-
-The writing speed of each mode is as follows.   
+# The writing speed of each mode   
 |File Syetem|Sector Size|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
-|FATFS|512|Safety|2KB/Sec|
-|FATFS|512|Performance|7KB/Sec|
-|FATFS|4096||60KB/Sec|
+|FATFS|512|Safety|3.37KB/Sec|
+|FATFS|512|Performance|12.55KB/Sec|
+|FATFS|4096||62.37KB/Sec|
+|SDSPI||||138.8970 kB/s|
+|SDMMC||1Line||158.7612 kB/s|
+|SDMMC||4Line||169.4510 kB/s|
 |SPIFFS|||29KB/Sec|
+
 
 # Limitations   
 - The server does not support multiple connections.   
