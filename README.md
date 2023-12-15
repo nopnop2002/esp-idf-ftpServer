@@ -198,7 +198,7 @@ You can change it to 4096 byte sectors using menuconfig.
 ![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5b5ba0a8-7924-45a3-8ba7-6cf9393a3f9f)
 
 # The writing speed of each mode   
-Using ESP32 and TOSHIBA EXCERIA 8GB Micro SD CARD.   
+Using ESP32 and SanDisk Ultra 8GB Micro SD CARD.   
 Enable Long filename support (Long filename buffer in heap).   
 |File Syetem|Sector Size|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
