@@ -49,7 +49,7 @@ You can select any one using menuconfig.
 - FAT file system on SPI Flash Memory like Winbond W25Q64(Not supported in this project)   
 - FAT file system on USB Memory Stick(Not supported in this project)   
 
-Besides this, the ESP32 supports the SPIFFS filesystem, but I don't use it because it can't handle directories.   
+Besides this, ESP32 supports SPIFFS file system, but this project will not use SPIFFS because it cannot handle directories.
 
 ![config-filesystem-1](https://user-images.githubusercontent.com/6020549/165684095-d1fd8f77-afb7-466e-9eda-061776e8b9f9.jpg)
 ![config-filesystem-2](https://user-images.githubusercontent.com/6020549/165684099-6d1a9563-17a3-49ba-a995-2ce400633cde.jpg)
