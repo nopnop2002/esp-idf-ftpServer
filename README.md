@@ -140,8 +140,8 @@ Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/s
 
 On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix.   
 __This allows arbitrary GPIOs to be used to connect an SD card.__   
-Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.
-The default settings are as follows.   
+Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.   
+The default settings are as follows. But you can change it.   
 
 |ESP32-S3 pin|SD card pin|Notes|
 |:-:|:-:|:--|
