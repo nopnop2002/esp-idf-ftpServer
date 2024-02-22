@@ -120,7 +120,7 @@ On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX.
 __GPIO pins cannot be customized.__   
 GPIO2 and GPIO12 cannot be changed.   
 So using 4-line SD mode with ESP32 is very tricky.   
-Please see the table below for the pin connections.   
+Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.
 
 |ESP32 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -140,6 +140,8 @@ Please see the table below for the pin connections.
 
 On ESP32-S3, SDMMC peripheral is connected to GPIO pins using GPIO matrix.   
 __This allows arbitrary GPIOs to be used to connect an SD card.__   
+Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.
+The default settings are as follows.   
 
 |ESP32-S3 pin|SD card pin|Notes|
 |:-:|:-:|:--|
@@ -157,19 +159,6 @@ __This allows arbitrary GPIOs to be used to connect an SD card.__
 ![config-filesystem-SDMMC-ESP32S3](https://user-images.githubusercontent.com/6020549/222021554-d882563c-5a27-48f7-80c6-8caf1c41c544.jpg)
 
 
-## Note about GPIO2 (ESP32 only)   
-GPIO2 pin is used as a bootstrapping pin, and should be low to enter UART download mode. One way to do this is to connect GPIO0 and GPIO2 using a jumper, and then the auto-reset circuit on most development boards will pull GPIO2 low along with GPIO0, when entering download mode.
-
-- Some boards have pulldown and/or LED on GPIO2. LED is usually ok, but pulldown will interfere with D0 signals and must be removed. Check the schematic of your development board for anything connected to GPIO2.
-
-## Note about GPIO12 (ESP32 only)   
-GPIO12 is used as a bootstrapping pin to select output voltage of an internal regulator which powers the flash chip (VDD_SDIO). This pin has an internal pulldown so if left unconnected it will read low at reset (selecting default 3.3V operation). When adding a pullup to this pin for SD card operation, consider the following:
-
-- For boards which don't use the internal regulator (VDD_SDIO) to power the flash, GPIO12 can be pulled high.
-- For boards which use 1.8V flash chip, GPIO12 needs to be pulled high at reset. This is fully compatible with SD card operation.
-- On boards which use the internal regulator and a 3.3V flash chip, GPIO12 must be low at reset. This is incompatible with SD card operation.
-    * In most cases, external pullup can be omitted and an internal pullup can be enabled using a `gpio_pullup_en(GPIO_NUM_12);` call. Most SD cards work fine when an internal pullup on GPIO12 line is enabled. Note that if ESP32 experiences a power-on reset while the SD card is sending data, high level on GPIO12 can be latched into the bootstrapping register, and ESP32 will enter a boot loop until external reset with correct GPIO12 level is applied.
-    * Another option is to burn the flash voltage selection efuses. This will permanently select 3.3V output voltage for the internal regulator, and GPIO12 will not be used as a bootstrapping pin. Then it is safe to connect a pullup resistor to GPIO12. This option is suggested for production use.
 
 # Using long file name support   
 By default, FATFS file names can be up to 8 characters long.   
