@@ -241,7 +241,7 @@ You need to make this setting when using FileZilla.
 ![FileZilla-1](https://github.com/user-attachments/assets/686a10ba-ef2d-4b15-be0f-80d321991f71)
 
 - FFFTP   
-![FFFTP](https://user-images.githubusercontent.com/6020549/110587181-ab208c00-81b6-11eb-9c41-95e3e1d67949.jpg)
+![ffftp](https://github.com/user-attachments/assets/37ea0130-6847-4e93-8d83-669b4774be28)
 
 - Windows standard ftp.exe   
 Unfortunately, Windows standard ftp.exe does not allow passive mode (PASV) connections. 
