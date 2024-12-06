@@ -562,7 +562,7 @@ static void ftp_fix_path(char *pwd) {
  */
 //-------------------------------------------------
 static void ftp_open_child (char *pwd, char *dir) {
-	ESP_LOGI(FTP_TAG, "open_child: %s + %s", pwd, dir);
+	ESP_LOGI(FTP_TAG, "open_child: [%s] + [%s]", pwd, dir);
 	if (strlen(dir) > 0) {
 		if (dir[0] == '/') {
 			// ** absolute path

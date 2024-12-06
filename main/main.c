@@ -1,10 +1,10 @@
 /*
- FTP Server example.
- This example code is in the Public Domain (or CC0 licensed, at your option.)
+	FTP Server example.
+	This example code is in the Public Domain (or CC0 licensed, at your option.)
 
- Unless required by applicable law or agreed to in writing, this
- software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- CONDITIONS OF ANY KIND, either express or implied.
+	Unless required by applicable law or agreed to in writing, this
+	software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	CONDITIONS OF ANY KIND, either express or implied.
 */
 
 #include <stdio.h>
@@ -65,17 +65,15 @@ static int s_retry_num = 0;
 //#define CONFIG_MMC_SDCARD  1
 
 
-static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
+static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
 #if CONFIG_AP_MODE
 	if (event_id == WIFI_EVENT_AP_STACONNECTED) {
 		wifi_event_ap_staconnected_t* event = (wifi_event_ap_staconnected_t*) event_data;
-		ESP_LOGI(TAG, "station "MACSTR" join, AID=%d",
-				 MAC2STR(event->mac), event->aid);
+		ESP_LOGI(TAG, "station "MACSTR" join, AID=%d", MAC2STR(event->mac), event->aid);
 	} else if (event_id == WIFI_EVENT_AP_STADISCONNECTED) {
 		wifi_event_ap_stadisconnected_t* event = (wifi_event_ap_stadisconnected_t*) event_data;
-		ESP_LOGI(TAG, "station "MACSTR" leave, AID=%d",
-				 MAC2STR(event->mac), event->aid);
+		ESP_LOGI(TAG, "station "MACSTR" leave, AID=%d", MAC2STR(event->mac), event->aid);
 	}
 #endif
 
@@ -112,18 +110,23 @@ void wifi_init_softap()
 	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
 	//ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL));
-	ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+	//ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+	ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
+		ESP_EVENT_ANY_ID,
+		&wifi_event_handler,
+		NULL,
+		NULL));
 
 	wifi_config_t wifi_config = {
 		.ap = {
-			.ssid = CONFIG_ESP_WIFI_SSID,
-			.ssid_len = strlen(CONFIG_ESP_WIFI_SSID),
-			.password = CONFIG_ESP_WIFI_PASSWORD,
+			.ssid = CONFIG_ESP_WIFI_AP_SSID,
+			.ssid_len = strlen(CONFIG_ESP_WIFI_AP_SSID),
+			.password = CONFIG_ESP_WIFI_AP_PASSWORD,
 			.max_connection = CONFIG_ESP_MAX_STA_CONN,
 			.authmode = WIFI_AUTH_WPA_WPA2_PSK
 		},
 	};
-	if (strlen(CONFIG_ESP_WIFI_PASSWORD) == 0) {
+	if (strlen(CONFIG_ESP_WIFI_AP_PASSWORD) == 0) {
 		wifi_config.ap.authmode = WIFI_AUTH_OPEN;
 	}
 
@@ -131,7 +134,7 @@ void wifi_init_softap()
 	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_config));
 	ESP_ERROR_CHECK(esp_wifi_start());
 
-	ESP_LOGI(TAG, "wifi_init_softap finished. SSID:%s password:%s", CONFIG_ESP_WIFI_SSID, CONFIG_ESP_WIFI_PASSWORD);
+	ESP_LOGI(TAG, "wifi_init_softap finished. SSID:%s password:%s", CONFIG_ESP_WIFI_AP_SSID, CONFIG_ESP_WIFI_AP_PASSWORD);
 }
 #endif // CONFIG_AP_MODE
 
@@ -187,19 +190,19 @@ esp_err_t wifi_init_sta()
 	esp_event_handler_instance_t instance_got_ip;
 	ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
 		ESP_EVENT_ANY_ID,
-		&event_handler,
+		&wifi_event_handler,
 		NULL,
 		&instance_any_id));
 	ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT,
 		IP_EVENT_STA_GOT_IP,
-		&event_handler,
+		&wifi_event_handler,
 		NULL,
 		&instance_got_ip));
 
 	wifi_config_t wifi_config = {
 		.sta = {
-			.ssid = CONFIG_ESP_WIFI_SSID,
-			.password = CONFIG_ESP_WIFI_PASSWORD,
+			.ssid = CONFIG_ESP_WIFI_ST_SSID,
+			.password = CONFIG_ESP_WIFI_ST_PASSWORD,
 			/* Authmode threshold resets to WPA2 as default if password matches WPA2 standards (pasword len => 8).
 			 * If you want to connect the device to deprecated WEP/WPA networks, Please set the threshold value
 			 * to WIFI_AUTH_WEP/WIFI_AUTH_WPA_PSK and set the password with length and format matching to
@@ -230,9 +233,9 @@ esp_err_t wifi_init_sta()
 	 * happened. */
 	esp_err_t ret_value = ESP_OK;
 	if (bits & WIFI_CONNECTED_BIT) {
-		ESP_LOGI(TAG, "connected to ap SSID:%s password:%s", CONFIG_ESP_WIFI_SSID, CONFIG_ESP_WIFI_PASSWORD);
+		ESP_LOGI(TAG, "connected to ap SSID:%s password:%s", CONFIG_ESP_WIFI_ST_SSID, CONFIG_ESP_WIFI_ST_PASSWORD);
 	} else if (bits & WIFI_FAIL_BIT) {
-		ESP_LOGE(TAG, "Failed to connect to SSID:%s, password:%s", CONFIG_ESP_WIFI_SSID, CONFIG_ESP_WIFI_PASSWORD);
+		ESP_LOGE(TAG, "Failed to connect to SSID:%s, password:%s", CONFIG_ESP_WIFI_ST_SSID, CONFIG_ESP_WIFI_ST_PASSWORD);
 		ret_value = ESP_FAIL;
 	} else {
 		ESP_LOGE(TAG, "UNEXPECTED EVENT");
