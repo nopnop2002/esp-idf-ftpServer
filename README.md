@@ -233,12 +233,12 @@ It works very stably.
 I tested these client.   
 __You need to set the connection type to Passive Mode.__   
 - WinSCP   
-![WinSCP](https://user-images.githubusercontent.com/6020549/110587152-9d6b0680-81b6-11eb-857d-31d87379a3b1.jpg)
+![WinScp](https://github.com/user-attachments/assets/c3e26311-74ee-42a7-a316-c100a8575434)
 
 - FileZilla   
 You need to make this setting when using FileZilla.
 ![FileZilla-2](https://user-images.githubusercontent.com/6020549/131819541-0ad0aacb-ed79-45c3-a536-bd239463ef02.jpg)
-![FileZilla](https://user-images.githubusercontent.com/6020549/110587823-795bf500-81b7-11eb-8dcb-eeb6e096e9f6.jpg)
+![FileZilla-1](https://github.com/user-attachments/assets/686a10ba-ef2d-4b15-be0f-80d321991f71)
 
 - FFFTP   
 ![FFFTP](https://user-images.githubusercontent.com/6020549/110587181-ab208c00-81b6-11eb-9c41-95e3e1d67949.jpg)
