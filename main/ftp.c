@@ -1361,7 +1361,7 @@ int32_t ftp_get_maxstack (void) {
 void ftp_task (void *pvParameters)
 {
 	ESP_LOGI(FTP_TAG, "ftp_task start");
-	//esp_log_level_set(FTP_TAG, ESP_LOG_WARN); 
+	esp_log_level_set(FTP_TAG, ESP_LOG_WARN); 
 	strcpy(ftp_user, CONFIG_FTP_USER);
 	strcpy(ftp_pass, CONFIG_FTP_PASSWORD);
 	ESP_LOGI(FTP_TAG, "ftp_user:[%s] ftp_pass:[%s]", ftp_user, ftp_pass);
