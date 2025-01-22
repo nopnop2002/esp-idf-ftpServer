@@ -154,8 +154,11 @@ static ftp_result_t ftp_read_file (char *filebuf, uint32_t desiredsize, uint32_t
 	ftp_result_t result = E_FTP_RESULT_CONTINUE;
 	*actualsize = fread(filebuf, 1, desiredsize, ftp_data.fp);
 	if (*actualsize == 0) {
+		if (feof(ftp_data.fp))
+			result = E_FTP_RESULT_OK;
+		else
+			result = E_FTP_RESULT_FAILED;
 		ftp_close_files_dir();
-		result = E_FTP_RESULT_FAILED;
 	} else if (*actualsize < desiredsize) {
 		ftp_close_files_dir();
 		result = E_FTP_RESULT_OK;
