@@ -43,11 +43,11 @@ The maximum partition size of the FAT file system that can be specified on the 4
 ## File System Selection
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
-- FAT file system on FLASH   
-- FAT file system on SPI peripheral SDCARD   
-- FAT file system on SDMMC peripheral SDCARD(Valid only for ESP32/ESP32S3)   
-- FAT file system on SPI Flash Memory like Winbond W25Q64(Not supported in this project)   
-- FAT file system on USB Memory Stick(Not supported in this project)   
+- FAT file system on Builtin SPI Flash Memory   
+- FAT file system on SD card with SDSPI Interface   
+- FAT file system on SD card with SDMMC Interface (Valid only for ESP32/ESP32S3)   
+- FAT file system on External SPI Flash Memory like Winbond W25Q64 (Not supported in this project)   
+- FAT file system on USB Memory Stick (Not supported in this project)   
 
 Besides this, ESP32 supports SPIFFS/LITTLEFS, but this project will not use SPIFFS/LITTLEFS because it cannot handle directories.
 
