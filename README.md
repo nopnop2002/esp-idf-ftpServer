@@ -180,12 +180,12 @@ Using ESP32 and SanDisk Ultra 16GB Micro SD CARD.
 Enable Long filename support (Long filename buffer in heap).   
 |File Syetem|Sector Size|Mode|Write Speed|
 |:-:|:-:|:-:|:-:|
-|FATFS|512|Safety|3.7428 kB/s|
-|FATFS|512|Performance|12.7535 kB/s|
-|FATFS|4096||79.7797 kB/s|
-|SDSPI|4096||167.7897 kB/s|
-|SDMMC|4096|1Line|167.1615 kB/s|
-|SDMMC|4096|4Line|167.8869 kB/s|
+|FATFS on Builtin SPI Flash Memory|512|Safety|3.7428 kB/s|
+|FATFS on Builtin SPI Flash Memory|512|Performance|12.7535 kB/s|
+|FATFS on Builtin SPI Flash Memory|4096||79.7797 kB/s|
+|FATFS on SD card with SDSPI Interface|4096||167.7897 kB/s|
+|FATFS on SD card with SDMMC Interface|4096|1Line|167.1615 kB/s|
+|FATFS on SD card with SDMMC Interface|4096|4Line|167.8869 kB/s|
 
 
 # Limitations   
