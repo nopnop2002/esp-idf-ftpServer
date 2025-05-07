@@ -164,7 +164,7 @@ The 512-byte sector has Performance mode and Safety mode.
 ![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5bc89f87-16b6-487d-a400-ebcb0fb94573)
 
 # Performance of each mode   
-Using ESP32 and SanDisk Ultra 16GB Micro SD CARD.   
+Using ESP32-CAM board and SanDisk Ultra 16GB Micro SD CARD.   
 Enable Long filename support (Long filename buffer in heap).   
 |File Syetem|Sector Size|Mode|Write Speed|Read Speed|
 |:-:|:-:|:-:|:-:|:-:|
