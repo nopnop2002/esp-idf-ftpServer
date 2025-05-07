@@ -1,5 +1,6 @@
 /*
 	FTP Server example.
+
 	This example code is in the Public Domain (or CC0 licensed, at your option.)
 
 	Unless required by applicable law or agreed to in writing, this
@@ -134,6 +135,20 @@ void wifi_init_softap()
 #endif // CONFIG_AP_MODE
 
 #if CONFIG_ST_MODE
+
+#if CONFIG_STATIC_IP
+static esp_err_t example_set_dns_server(esp_netif_t *netif, uint32_t addr, esp_netif_dns_type_t type)
+{
+	if (addr && (addr != IPADDR_NONE)) {
+		esp_netif_dns_info_t dns;
+		dns.ip.u_addr.ip4.addr = addr;
+		dns.ip.type = IPADDR_TYPE_V4;
+		ESP_ERROR_CHECK(esp_netif_set_dns_info(netif, type, &dns));
+	}
+	return ESP_OK;
+}
+#endif
+
 esp_err_t wifi_init_sta()
 {
 	s_wifi_event_group = xEventGroupCreate();
@@ -159,22 +174,11 @@ esp_err_t wifi_init_sta()
 	ip_info.ip.addr = ipaddr_addr(CONFIG_STATIC_IP_ADDRESS);
 	ip_info.netmask.addr = ipaddr_addr(CONFIG_STATIC_NM_ADDRESS);
 	ip_info.gw.addr = ipaddr_addr(CONFIG_STATIC_GW_ADDRESS);;
-	esp_netif_set_ip_info(netif, &ip_info);
+	ESP_ERROR_CHECK(esp_netif_set_ip_info(netif, &ip_info));
 
-	/*
-	I referred from here.
-	https://www.esp32.com/viewtopic.php?t=5380
-	if we should not be using DHCP (for example we are using static IP addresses),
-	then we need to instruct the ESP32 of the locations of the DNS servers manually.
-	Google publicly makes available two name servers with the addresses of 8.8.8.8 and 8.8.4.4.
-	*/
-
-	ip_addr_t d;
-	d.type = IPADDR_TYPE_V4;
-	d.u_addr.ip4.addr = 0x08080808; //8.8.8.8 dns
-	dns_setserver(0, &d);
-	d.u_addr.ip4.addr = 0x08080404; //8.8.4.4 dns
-	dns_setserver(1, &d);
+	/* Set DNS Server */
+	ESP_ERROR_CHECK(example_set_dns_server(netif, ipaddr_addr("8.8.8.8"), ESP_NETIF_DNS_MAIN));
+	ESP_ERROR_CHECK(example_set_dns_server(netif, ipaddr_addr("8.8.4.4"), ESP_NETIF_DNS_BACKUP));
 
 #endif // CONFIG_STATIC_IP
 
@@ -236,15 +240,19 @@ esp_err_t wifi_init_sta()
 		ESP_LOGE(TAG, "UNEXPECTED EVENT");
 		ret_value = ESP_ERR_INVALID_STATE;
 	}
-	ESP_LOGI(TAG, "wifi_init_sta finished.");
+
+	/* The event will not be processed after unregister */
+	ESP_ERROR_CHECK(esp_event_handler_instance_unregister(IP_EVENT, IP_EVENT_STA_GOT_IP, instance_got_ip));
+	ESP_ERROR_CHECK(esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, instance_any_id));
 	vEventGroupDelete(s_wifi_event_group); 
+	ESP_LOGI(TAG, "wifi_init_sta finished.");
 	return ret_value; 
 }
 #endif // CONFIG_ST_MODE
 
 #if CONFIG_FATFS
 wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
-	ESP_LOGI(TAG, "Initializing FAT file system on Builtin SPI Flash Memory");
+	ESP_LOGI(TAG, "Initializing FATFS on Builtin SPI Flash Memory");
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
 	const esp_vfs_fat_mount_config_t mount_config = {
@@ -258,7 +266,11 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 		ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
 		return -1;
 	}
-	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
+
+	size_t total = wl_size(s_wl_handle);
+	size_t sector = wl_sector_size(s_wl_handle);
+	ESP_LOGI(TAG, "Partition size: total: %d, sector: %d", total, sector);
+	ESP_LOGI(TAG, "Mount FATFS on %s", mount_point);
 	ESP_LOGI(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
 	return s_wl_handle;
 }
@@ -266,7 +278,7 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 
 #if CONFIG_LITTLEFS 
 esp_err_t mountLITTLEFS(char * partition_label, char * mount_point) {
-	ESP_LOGI(TAG, "Initializing LittleFS file system on Builtin SPI Flash Memory");
+	ESP_LOGI(TAG, "Initializing LittleFS on Builtin SPI Flash Memory");
 
 	esp_vfs_littlefs_conf_t conf = {
 		.base_path = mount_point,
@@ -298,15 +310,13 @@ esp_err_t mountLITTLEFS(char * partition_label, char * mount_point) {
 		return ret;
 	}
 	ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
-	ESP_LOGI(TAG, "Mount LITTLEFS filesystem on %s", mount_point);
+	ESP_LOGI(TAG, "Mount LittleFS on %s", mount_point);
 	return ret;
 }
 #endif // CONFIG_LITTLEFS
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
-	ESP_LOGI(TAG, "Initializing SDCARD file system");
-	esp_err_t ret;
 	// Options for mounting the filesystem.
 	// If format_if_mount_failed is set to true, SD card will be partitioned and
 	// formatted in case when mounting fails.
@@ -318,19 +328,15 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	//sdmmc_card_t* card;
 
 #if CONFIG_MMC_SDCARD
+	ESP_LOGI(TAG, "Initializing FATFS on MMC SDCARD");
 	// Use settings defined above to initialize SD card and mount FAT filesystem.
-	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
-	// Please check its source code and implement error recovery when developing
-	// production applications.
-
-	ESP_LOGI(TAG, "Using SDMMC peripheral");
 	sdmmc_host_t host = SDMMC_HOST_DEFAULT();
 
 	// This initializes the slot without card detect (CD) and write protect (WP) signals.
 	// Modify slot_config.gpio_cd and slot_config.gpio_wp if your board has these signals.
 	sdmmc_slot_config_t slot_config = SDMMC_SLOT_CONFIG_DEFAULT();
 
-	// Set bus width to use:
+	// Set bus width to use
 #ifdef CONFIG_SDMMC_BUS_WIDTH_4
 	ESP_LOGI(TAG, "SDMMC 4 line mode");
 	slot_config.width = 4;
@@ -358,19 +364,30 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	// connected on the bus. This is for debug / example purpose only.
 	slot_config.flags |= SDMMC_SLOT_FLAG_INTERNAL_PULLUP;
 
-	ESP_LOGI(TAG, "Mounting filesystem");
-	ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
-
-#else
-	// Use settings defined above to initialize SD card and mount FAT filesystem.
 	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
 	// Please check its source code and implement error recovery when developing
 	// production applications.
-	ESP_LOGI(TAG, "Using SPI peripheral");
+	esp_err_t ret = esp_vfs_fat_sdmmc_mount(mount_point, &host, &slot_config, &mount_config, &card);
+
+#endif // CONFIG_MMC_SDCARD
+
+#if CONFIG_SPI_SDCARD
+	ESP_LOGI(TAG, "Initializing FATFS on SPI SDCARD");
 	ESP_LOGI(TAG, "SDSPI_MOSI=%d", CONFIG_SDSPI_MOSI);
 	ESP_LOGI(TAG, "SDSPI_MISO=%d", CONFIG_SDSPI_MISO);
 	ESP_LOGI(TAG, "SDSPI_CLK=%d", CONFIG_SDSPI_CLK);
 	ESP_LOGI(TAG, "SDSPI_CS=%d", CONFIG_SDSPI_CS);
+	ESP_LOGI(TAG, "SDSPI_POWER=%d", CONFIG_SDSPI_POWER);
+
+	if (CONFIG_SDSPI_POWER != -1) {
+		//gpio_pad_select_gpio(CONFIG_SPI_POWER);
+		gpio_reset_pin(CONFIG_SDSPI_POWER);
+		/* Set the GPIO as a push/pull output */
+		gpio_set_direction(CONFIG_SDSPI_POWER, GPIO_MODE_OUTPUT);
+		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", CONFIG_SDSPI_POWER);
+		gpio_set_level(CONFIG_SDSPI_POWER, 1);
+		vTaskDelay(3000 / portTICK_PERIOD_MS);
+	}
 
 	sdmmc_host_t host = SDSPI_HOST_DEFAULT();
 	spi_bus_config_t bus_cfg = {
@@ -381,7 +398,7 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 		.quadhd_io_num = -1,
 		.max_transfer_sz = 4000,
 	};
-	ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+	esp_err_t ret = spi_bus_initialize(host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
 	if (ret != ESP_OK) {
 		ESP_LOGE(TAG, "Failed to initialize bus.");
 		return ret;
@@ -392,9 +409,12 @@ esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
 	slot_config.gpio_cs = CONFIG_SDSPI_CS;
 	slot_config.host_id = host.slot;
 
+	// Note: esp_vfs_fat_sdmmc/sdspi_mount is all-in-one convenience functions.
+	// Please check its source code and implement error recovery when developing
+	// production applications.
 	ret = esp_vfs_fat_sdspi_mount(mount_point, &host, &slot_config, &mount_config, &card);
 	ESP_LOGI(TAG, "esp_vfs_fat_sdspi_mount=%d", ret);
-#endif // CONFIG_MMC_SDCARD
+#endif // CONFIG_SPI_SDCARD
 
 	if (ret != ESP_OK) {
 		if (ret == ESP_FAIL) {
@@ -515,6 +535,7 @@ void app_main(void)
 	ESP_LOGW(TAG, "This server manages file timestamps in GMT.");
 #endif // CONFIG_ST_MODE
 
+	// Mount file system
 #if CONFIG_FATFS
 	char *partition_label = "storage";
 	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
@@ -527,25 +548,10 @@ void app_main(void)
 	if (ret != ESP_OK) return;
 #endif
 
-#if CONFIG_SPI_SDCARD
-	if (CONFIG_SDSPI_POWER != -1) {
-		//gpio_pad_select_gpio(CONFIG_SDSPI_POWER);
-		gpio_reset_pin(CONFIG_SDSPI_POWER);
-		/* Set the GPIO as a push/pull output */
-		gpio_set_direction(CONFIG_SDSPI_POWER, GPIO_MODE_OUTPUT);
-		ESP_LOGI(TAG, "Turning on the peripherals power using GPIO%d", CONFIG_SDSPI_POWER);
-		gpio_set_level(CONFIG_SDSPI_POWER, 1);
-		vTaskDelay(3000 / portTICK_PERIOD_MS);
-	}
-#endif
-	
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
-	// Mount FAT File System on SDCARD
 	sdmmc_card_t card;
 	ret = mountSDCARD(MOUNT_POINT, &card);
-	if (ret != ESP_OK) {
-		while(1) { vTaskDelay(1); }
-	};
+	if (ret != ESP_OK) return;
 #endif 
 
 	// Create FTP server task
@@ -558,7 +564,7 @@ void app_main(void)
 		portMAX_DELAY);/* Wait forever. */
 	ESP_LOGE(TAG, "ftp_task finish");
 
-	// Unmount FAT file system
+	// Unmount file system
 #if CONFIG_FATFS
 	esp_vfs_fat_spiflash_unmount(MOUNT_POINT, s_wl_handle);
 	ESP_LOGI(TAG, "FATFS unmounted");

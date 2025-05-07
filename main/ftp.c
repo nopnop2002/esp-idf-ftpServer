@@ -841,6 +841,7 @@ static void ftp_process_cmd (void) {
 				ftp_data.loggin.passvalid = true && (strlen(ftp_pass) == strlen(ftp_scratch_buffer));
 				if (ftp_data.loggin.passvalid) {
 					ftp_send_reply(230, NULL);
+					ESP_LOGW(FTP_TAG, "Connected.");
 					break;
 				}
 			}
