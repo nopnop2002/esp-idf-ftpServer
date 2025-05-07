@@ -1,5 +1,5 @@
 # esp-idf-ftpServer
-FTP Server for esp-idf using FAT file system.   
+FTP Server for esp-idf using FATFS/LittleFS.   
 I found [this](https://www.esp32.com/viewtopic.php?f=13&t=5013#p21738) information.   
 So, I ported from [here](https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/libs/ftp.c).   
 Directory operations are possible because FATFS/LittlsFS is used.   
