@@ -19,19 +19,10 @@ idf.py menuconfig
 idf.py flash monitor
 ```
 
-__If you need more storage space on FLASH, you need to modify partitions_example.csv.__   
-
 # Partition table
-```
-# Name,   Type, SubType, Offset,  Size, Flags
-# Note: if you have increased the bootloader size, make sure to update the offsets to avoid overlap
-nvs,      data, nvs,     0x9000,  0x6000,
-phy_init, data, phy,     0xf000,  0x1000,
-factory,  app,  factory, 0x10000, 1M,
-storage,  data, fat,            , 0xF0000,  ---> This is for FAT file system
-```
-
-If your ESP32 has 4M Flash, you can get more space by changing this.   
+Use partitions_example_fatfs.csv when you select FATFS on Builtin SPI Flash Memory.   
+Use partitions_example_littlefs.csv when you select LittleFS on Builtin SPI Flash Memory.   
+If your board has 4M Flash, you can get more space by changing this.   
 The maximum partition size of the FAT file system that can be specified on the 4M Flash model is 0x2F0000 (=2,960K).   
 ![config_flash_size](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/81926a15-2d4e-466f-a889-d118b92eba0d)
 
@@ -43,24 +34,27 @@ The maximum partition size of the FAT file system that can be specified on the 4
 ## File System Selection
 ESP32 supports the following file systems.   
 You can select any one using menuconfig.   
-- FAT file system on Builtin SPI Flash Memory   
-- FAT file system on SD card with SDSPI Interface   
-- FAT file system on SD card with SDMMC Interface (Valid only for ESP32/ESP32S3)   
-- FAT file system on External SPI Flash Memory like Winbond W25Q64 (Not supported in this project)   
-- FAT file system on USB Memory Stick (Not supported in this project)   
+- LittleFS on Builtin SPI Flash Memory   
+- FATFS on Builtin SPI Flash Memory   
+- FATFS on SD card with SDSPI Interface   
+- FATFS on SD card with SDMMC Interface (Valid only for ESP32/ESP32S3)   
+- FATFS on External SPI Flash Memory like Winbond W25Q64 (Not supported in this project)   
+- FATFS on USB Memory Stick (Not supported in this project)   
 
 Besides this, ESP32 supports SPIFFS, but this project will not use SPIFFS because it cannot handle directories.
+![Image](https://github.com/user-attachments/assets/b6438577-6bf3-40d2-b700-b81f269fba37)
+![Image](https://github.com/user-attachments/assets/32b224fe-dfc0-4aee-b46e-ac05362e8f89)
 
-![config-filesystem-1](https://user-images.githubusercontent.com/6020549/165684095-d1fd8f77-afb7-466e-9eda-061776e8b9f9.jpg)
-![config-filesystem-2](https://user-images.githubusercontent.com/6020549/165684099-6d1a9563-17a3-49ba-a995-2ce400633cde.jpg)
-
-When using MMC SDCARD, you can select 1 Line mode or 4 Line mode.   
+When using SD card with SDMMC, you can select 1 Line mode or 4 Line mode.   
 ![config-filesystem-3](https://user-images.githubusercontent.com/6020549/222020427-d1dd2c40-955d-46ca-b32f-3e8b8439778a.jpg)
 ![config-filesystem-4](https://user-images.githubusercontent.com/6020549/222020434-e54cd185-1b1c-45eb-bdf8-44d2f627fe5f.jpg)
 
 
 Note:   
 The connection when using SDSPI, SDMMC will be described later.   
+
+Note:   
+LITTLEFS requires ESP-IDF V5.2 or later.   
 
 ## WiFi Setting for Station-MODE
 
@@ -82,7 +76,7 @@ You can use static IP.
 
 
 
-# Using FAT file system on SPI peripheral SDCARD
+# Using FAT file system on SD card with SDSPI Interface
 
 |ESP32|ESP32S2/S3|ESP32C2/C3/C6|SPI card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
@@ -101,7 +95,7 @@ Note:
 This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
 
 
-# Using FAT file system on SDMMC peripheral SDCARD
+# Using FAT file system on SD card with SDMMC Interface
 
 On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX.   
 __GPIO pins cannot be customized.__   
@@ -178,14 +172,15 @@ The 512-byte sector has Performance mode and Safety mode.
 # The writing speed of each mode   
 Using ESP32 and SanDisk Ultra 16GB Micro SD CARD.   
 Enable Long filename support (Long filename buffer in heap).   
-|File Syetem|Sector Size|Mode|Write Speed|
-|:-:|:-:|:-:|:-:|
-|FATFS on Builtin SPI Flash Memory|512|Safety|3.7428 kB/s|
-|FATFS on Builtin SPI Flash Memory|512|Performance|12.7535 kB/s|
-|FATFS on Builtin SPI Flash Memory|4096||79.7797 kB/s|
-|FATFS on SD card with SDSPI Interface|4096||167.7897 kB/s|
-|FATFS on SD card with SDMMC Interface|4096|1Line|167.1615 kB/s|
-|FATFS on SD card with SDMMC Interface|4096|4Line|167.8869 kB/s|
+|File Syetem|Sector Size|Mode|Write Speed|Read Speed|
+|:-:|:-:|:-:|:-:|:-:|
+|LittlsFS on Builtin SPI Flash Memory|||51 kB/s|1678 kB/s|
+|FATFS on Builtin SPI Flash Memory|512|Safety|2 kB/s|1735 kB/s|
+|FATFS on Builtin SPI Flash Memory|512|Performance|5 kB/s|1735 kB/s|
+|FATFS on Builtin SPI Flash Memory|4096||46 kB/s|2625 kB/s|
+|FATFS on SD card with SDSPI Interface|4096||398 kB/s|610 kB/s|
+|FATFS on SD card with SDMMC Interface|4096|1Line|499 kB/s|875kB/s|
+|FATFS on SD card with SDMMC Interface|4096|4Line|572 kB/s|1190 kB/s|
 
 
 # Limitations   

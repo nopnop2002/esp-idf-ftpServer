@@ -13,22 +13,26 @@ menu "FTP Server Configuration"
 
 		choice FILE_SYSTEM
 			prompt "File System Selection"
-			default FLASH
+			default FATFS
 			help
 				Select File System.
-			config FLASH
-				bool "FAT File System on FLASH"
+			config FATFS
+				bool "FATFS on Builtin SPI Flash Memory"
 				help
-					Use FAT File System on FLASH.
+					Use FATFS on Builtin SPI Flash Memory.
+			config LITTLEFS
+				bool "LITTLEFS on Builtin SPI Flash Memory"
+				help
+					Use LITTLEFS on Builtin SPI Flash Memory.
 			config SPI_SDCARD
-				bool "FAT File System on SPI SDCARD"
+				bool "FATFS on SPI SDCARD"
 				help
-					Use FAT File System on SPI SDCARD.
+					Use FATFS on SPI SDCARD.
 			config MMC_SDCARD
 				depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3
-				bool "FAT File System on MMC SDCARD"
+				bool "FATFS on MMC SDCARD"
 				help
-					Use FAT File System on MMC SDCARD.
+					Use FATFS on MMC SDCARD.
 		endchoice
 
 		choice SDMMC_BUS_WIDTH

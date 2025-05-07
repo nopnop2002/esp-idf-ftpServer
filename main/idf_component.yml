@@ -4,3 +4,7 @@ dependencies:
     version: "^1.0.3"
     rules:
       - if: "idf_version >=5.0"
+  joltwallet/littlefs:
+    version: "^1.14.0"
+    rules:
+      - if: "idf_version >=5.0"

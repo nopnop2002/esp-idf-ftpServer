@@ -24,6 +24,7 @@
 #include "esp_vfs.h"
 #include "nvs_flash.h"
 #include "esp_vfs_fat.h"
+#include "esp_littlefs.h"
 #include "driver/sdmmc_host.h"
 #include "driver/sdspi_host.h"
 #include "sdmmc_cmd.h"
@@ -58,12 +59,6 @@ static EventGroupHandle_t s_wifi_event_group;
 
 static int s_retry_num = 0;
 #endif
-
-//for test
-//#define CONFIG_FLASH	1
-//#define CONFIG_SPI_SDCARD  1
-//#define CONFIG_MMC_SDCARD  1
-
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
@@ -247,9 +242,9 @@ esp_err_t wifi_init_sta()
 }
 #endif // CONFIG_ST_MODE
 
-#if CONFIG_FLASH
-wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
-	ESP_LOGI(TAG, "Initializing FLASH file system");
+#if CONFIG_FATFS
+wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
+	ESP_LOGI(TAG, "Initializing FAT file system on Builtin SPI Flash Memory");
 	// To mount device we need name of device partition, define base_path
 	// and allow format partition in case if it is new one and was not formated before
 	const esp_vfs_fat_mount_config_t mount_config = {
@@ -260,15 +255,53 @@ wl_handle_t mountFLASH(char * partition_label, char * mount_point) {
 	wl_handle_t s_wl_handle;
 	esp_err_t err = esp_vfs_fat_spiflash_mount(mount_point, partition_label, &mount_config, &s_wl_handle);
 	if (err != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to mount FLASH (%s)", esp_err_to_name(err));
+		ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
 		return -1;
 	}
 	ESP_LOGI(TAG, "Mount FAT filesystem on %s", mount_point);
 	ESP_LOGI(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
 	return s_wl_handle;
 }
-#endif // CONFIG_FLASH
+#endif // CONFIG_FATFS
 
+#if CONFIG_LITTLEFS 
+esp_err_t mountLITTLEFS(char * partition_label, char * mount_point) {
+	ESP_LOGI(TAG, "Initializing LittleFS file system on Builtin SPI Flash Memory");
+
+	esp_vfs_littlefs_conf_t conf = {
+		.base_path = mount_point,
+		.partition_label = partition_label,
+		.format_if_mount_failed = true,
+		.dont_mount = false,
+	};
+
+	// Use settings defined above to initialize and mount LittleFS filesystem.
+	// Note: esp_vfs_littlefs_register is an all-in-one convenience function.
+	esp_err_t ret = esp_vfs_littlefs_register(&conf);
+
+	if (ret != ESP_OK) {
+		if (ret == ESP_FAIL) {
+			ESP_LOGE(TAG, "Failed to mount or format filesystem");
+		} else if (ret == ESP_ERR_NOT_FOUND) {
+			ESP_LOGE(TAG, "Failed to find LittleFS partition");
+		} else {
+			ESP_LOGE(TAG, "Failed to initialize LittleFS (%s)", esp_err_to_name(ret));
+		}
+		return ret;
+	}
+
+	size_t total = 0, used = 0;
+	ret = esp_littlefs_info(conf.partition_label, &total, &used);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to get LittleFS partition information (%s)", esp_err_to_name(ret));
+		//esp_littlefs_format(conf.partition_label);
+		return ret;
+	}
+	ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+	ESP_LOGI(TAG, "Mount LITTLEFS filesystem on %s", mount_point);
+	return ret;
+}
+#endif // CONFIG_LITTLEFS
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 esp_err_t mountSDCARD(char * mount_point, sdmmc_card_t * card) {
@@ -444,6 +477,7 @@ void app_main(void)
 	}
 	ESP_ERROR_CHECK(ret);
 
+	// Initialize WiFi
 #if CONFIG_AP_MODE
 	ESP_LOGI(TAG, "ESP_WIFI_MODE_AP");
 	wifi_init_softap();
@@ -451,28 +485,23 @@ void app_main(void)
 
 #if CONFIG_ST_MODE
 	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
-	if (wifi_init_sta() != ESP_OK) {
-		ESP_LOGE(TAG, "Connection failed");
-		while(1) { vTaskDelay(1); }
-	}
+	ESP_ERROR_CHECK(wifi_init_sta());
 
 	// Initialize mDNS
 	initialise_mdns();
+
+	// Obtain local IP address
 	esp_netif_ip_info_t ip_info;
 	ESP_ERROR_CHECK(esp_netif_get_ip_info(esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"), &ip_info));
 
-	/* Print the local IP address */
+	// Print the local IP address
 	ESP_LOGI(TAG, "IP Address : " IPSTR, IP2STR(&ip_info.ip));
 	ESP_LOGI(TAG, "Subnet mask: " IPSTR, IP2STR(&ip_info.netmask));
-	ESP_LOGI(TAG, "Gateway    : " IPSTR, IP2STR(&ip_info.gw));
+	ESP_LOGI(TAG, "Gateway	  : " IPSTR, IP2STR(&ip_info.gw));
 
-	// obtain time over NTP
+	// Obtain time over NTP
 	ESP_LOGI(TAG, "Getting time over NTP.");
-	ret = obtain_time();
-	if(ret != ESP_OK) {
-		ESP_LOGE(TAG, "Fail to getting time over NTP.");
-		while(1) { vTaskDelay(1); }
-	}
+	ESP_ERROR_CHECK(obtain_time());
 
 	// Show current date & time
 	time_t now;
@@ -484,16 +513,19 @@ void app_main(void)
 	strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
 	ESP_LOGI(TAG, "The local date/time is: %s", strftime_buf);
 	ESP_LOGW(TAG, "This server manages file timestamps in GMT.");
-#endif
+#endif // CONFIG_ST_MODE
 
-#if CONFIG_FLASH
-	// Mount FAT File System on FLASH
+#if CONFIG_FATFS
 	char *partition_label = "storage";
-	wl_handle_t s_wl_handle = mountFLASH(partition_label, MOUNT_POINT);
-	if (s_wl_handle < 0) {
-		while(1) { vTaskDelay(1); }
-	};
+	wl_handle_t s_wl_handle = mountFATFS(partition_label, MOUNT_POINT);
+	if (s_wl_handle < 0) return;
 #endif 
+
+#if CONFIG_LITTLEFS 
+	char *partition_label = "storage";
+	ret = mountLITTLEFS(partition_label, MOUNT_POINT);
+	if (ret != ESP_OK) return;
+#endif
 
 #if CONFIG_SPI_SDCARD
 	if (CONFIG_SDSPI_POWER != -1) {
@@ -527,10 +559,15 @@ void app_main(void)
 	ESP_LOGE(TAG, "ftp_task finish");
 
 	// Unmount FAT file system
-#if CONFIG_FLASH
+#if CONFIG_FATFS
 	esp_vfs_fat_spiflash_unmount(MOUNT_POINT, s_wl_handle);
-	ESP_LOGI(TAG, "FLASH unmounted");
+	ESP_LOGI(TAG, "FATFS unmounted");
 #endif 
+
+#if CONFIG_LITTLEFS
+	esp_vfs_littlefs_unregister(partition_label);
+	ESP_LOGI(TAG, "LittleFS unmounted");
+#endif
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 	esp_vfs_fat_sdcard_unmount(MOUNT_POINT, &card);
