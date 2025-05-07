@@ -72,7 +72,7 @@ You can use static IP.
 
 
 
-# Using FAT file system on SD card with SDSPI Interface
+# Using FATFS on SD card with SDSPI Interface
 
 |ESP32|ESP32S2/S3|ESP32C2/C3/C6|SPI card pin|Notes|
 |:-:|:-:|:-:|:-:|:--|
@@ -92,7 +92,7 @@ This project doesn't utilize card detect (CD) and write protect (WP) signals fro
 
 Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.   
 
-# Using FAT file system on SD card with SDMMC Interface
+# Using FATFS on SD card with SDMMC Interface
 
 On ESP32, SDMMC peripheral is connected to specific GPIO pins using the IO MUX.   
 __GPIO pins cannot be customized.__   
