@@ -18,7 +18,7 @@ idf.py menuconfig
 idf.py flash monitor
 ```
 
-# Partition table
+# Partition table for Builtin SPI Flash Memory
 Use partitions_example_fatfs.csv when you select FATFS on Builtin SPI Flash Memory.   
 Use partitions_example_littlefs.csv when you select LittleFS on Builtin SPI Flash Memory.   
 If your board has 4M Flash, you can get more space by changing this.   
