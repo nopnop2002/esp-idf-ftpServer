@@ -2,8 +2,7 @@
 FTP Server for esp-idf using FAT file system.   
 I found [this](https://www.esp32.com/viewtopic.php?f=13&t=5013#p21738) information.   
 So, I ported from [here](https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/libs/ftp.c).   
-Since it uses the FAT file system instead of SPIFFS, directory operations are possible.   
-Also, compared to SPIFFS, writing is about three times faster.   
+Directory operations are possible because FATFS/LittlsFS is used.   
 
 # Software requirements
 ESP-IDF V5.0 or later.   
@@ -23,23 +22,20 @@ idf.py flash monitor
 Use partitions_example_fatfs.csv when you select FATFS on Builtin SPI Flash Memory.   
 Use partitions_example_littlefs.csv when you select LittleFS on Builtin SPI Flash Memory.   
 If your board has 4M Flash, you can get more space by changing this.   
-The maximum partition size of the FAT file system that can be specified on the 4M Flash model is 0x2F0000 (=2,960K).   
+The maximum partition size that can be specified for the 4M flash model is 0x2F0000(=2,960K).   
 ![config_flash_size](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/81926a15-2d4e-466f-a889-d118b92eba0d)
 
 # Configuration
-
 ![config-main](https://user-images.githubusercontent.com/6020549/107847756-a4aa2900-6e31-11eb-9525-6fd82bead5a3.jpg)
 ![config-app](https://user-images.githubusercontent.com/6020549/127939325-1b565ef7-9045-4800-95ad-0153342b5fc1.jpg)
 
 ## File System Selection
-ESP32 supports the following file systems.   
+This project supports the following file systems.   
 You can select any one using menuconfig.   
 - LittleFS on Builtin SPI Flash Memory   
 - FATFS on Builtin SPI Flash Memory   
 - FATFS on SD card with SDSPI Interface   
 - FATFS on SD card with SDMMC Interface (Valid only for ESP32/ESP32S3)   
-- FATFS on External SPI Flash Memory like Winbond W25Q64 (Not supported in this project)   
-- FATFS on USB Memory Stick (Not supported in this project)   
 
 Besides this, ESP32 supports SPIFFS, but this project will not use SPIFFS because it cannot handle directories.
 ![Image](https://github.com/user-attachments/assets/b6438577-6bf3-40d2-b700-b81f269fba37)
@@ -54,7 +50,7 @@ Note:
 The connection when using SDSPI, SDMMC will be described later.   
 
 Note:   
-LITTLEFS requires ESP-IDF V5.2 or later.   
+LittleFS requires ESP-IDF V5.2 or later.   
 
 ## WiFi Setting for Station-MODE
 
@@ -94,6 +90,7 @@ __You can change it to any pin using menuconfig.__
 Note:   
 This project doesn't utilize card detect (CD) and write protect (WP) signals from SD card slot.   
 
+Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.   
 
 # Using FAT file system on SD card with SDMMC Interface
 
@@ -139,10 +136,6 @@ The default settings are as follows. But you can change it.
 
 ![config-filesystem-SDMMC-ESP32S3](https://user-images.githubusercontent.com/6020549/222021554-d882563c-5a27-48f7-80c6-8caf1c41c544.jpg)
 
-# Using FAT file system on SDSPI peripheral SDCARD
-Click [here](https://github.com/espressif/esp-idf/tree/master/examples/storage/sd_card/sdspi) for details.   
-
-
 # Using long file name support   
 By default, FATFS file names can be up to 8 characters long.   
 If you use filenames longer than 8 characters, you need to change the values below.   
@@ -169,7 +162,7 @@ The 512-byte sector has Performance mode and Safety mode.
 ![config-serctor-seize-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/31ca5556-b3bf-41ab-b566-17849acd2837)
 ![config-serctor-seize-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/5bc89f87-16b6-487d-a400-ebcb0fb94573)
 
-# The writing speed of each mode   
+# Performance of each mode   
 Using ESP32 and SanDisk Ultra 16GB Micro SD CARD.   
 Enable Long filename support (Long filename buffer in heap).   
 |File Syetem|Sector Size|Mode|Write Speed|Read Speed|
