@@ -19,8 +19,8 @@ idf.py flash monitor
 ```
 
 # Partition table for Builtin SPI Flash Memory
-Use partitions_example_fatfs.csv when you select FATFS on Builtin SPI Flash Memory.   
-Use partitions_example_littlefs.csv when you select LittleFS on Builtin SPI Flash Memory.   
+If you select FATFS on the built-in SPI flash memory, use partitions_example_fatfs.csv.   
+If you select LittleFS on the built-in SPI flash memory, use partitions_example_littlefs.csv.
 If your board has 4M SPI Flash Memory, you can get more space by changing this.   
 The maximum partition size that can be specified for the 4M flash model is 0x2F0000(=2,960K).   
 If you use 4M SPI Flash Memory, you need to change this.   
