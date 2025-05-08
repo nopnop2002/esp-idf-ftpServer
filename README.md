@@ -4,6 +4,33 @@ I found [this](https://www.esp32.com/viewtopic.php?f=13&t=5013#p21738) informati
 So, I ported from [here](https://github.com/loboris/MicroPython_ESP32_psRAM_LoBo/blob/master/MicroPython_BUILD/components/micropython/esp32/libs/ftp.c).   
 Directory operations are possible because FATFS/LittlsFS is used.   
 
+
+# Difference between FATFS and LittleFS
+- FATFS   
+	Case insensitive.   
+	```
+	ftp> dir
+	227 (192,168,10,130,7,232)
+	150
+	-rw-rw-rw-   1 root  root        41 May 08 00:47 long_file_name_support.txt
+	drw-rw-rw-   1 root  root         0 May 08 00:48 sub_directory1
+	drw-rw-rw-   1 root  root         0 May 08 00:48 sub_directory2
+	```
+
+- LittleFS   
+	Case sensitive.   
+	```
+	ftp> dir
+	227 (192,168,10,130,7,232)
+	150
+	-rw-rw-rw-   1 root  root        41 May 08 00:51 LONG_FILE_NAME_SUPPORT.txt
+	drw-rw-rw-   1 root  root         0 Dec 31 1969 SUB_DIRECTORY1
+	drw-rw-rw-   1 root  root         0 Dec 31 1969 SUB_DIRECTORY2
+	-rw-rw-rw-   1 root  root        41 May 08 00:51 long_file_name_support.txt
+	drw-rw-rw-   1 root  root         0 Dec 31 1969 sub_directory1
+	drw-rw-rw-   1 root  root         0 Dec 31 1969 sub_directory2
+	```
+
 # Software requirements
 ESP-IDF V5.0 or later.   
 ESP-IDF V4.4 release branch reached EOL in July 2024.   
