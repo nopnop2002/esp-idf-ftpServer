@@ -261,15 +261,19 @@ wl_handle_t mountFATFS(char * partition_label, char * mount_point) {
 		.allocation_unit_size = CONFIG_WL_SECTOR_SIZE
 	};
 	wl_handle_t s_wl_handle;
-	esp_err_t err = esp_vfs_fat_spiflash_mount(mount_point, partition_label, &mount_config, &s_wl_handle);
-	if (err != ESP_OK) {
-		ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
+	esp_err_t ret = esp_vfs_fat_spiflash_mount(mount_point, partition_label, &mount_config, &s_wl_handle);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(ret));
 		return -1;
 	}
 
-	size_t total = wl_size(s_wl_handle);
-	size_t sector = wl_sector_size(s_wl_handle);
-	ESP_LOGI(TAG, "Partition size: total: %d, sector: %d", total, sector);
+	uint64_t total=0, free=0;
+	ret = esp_vfs_fat_info(mount_point, &total, &free);
+	if (ret != ESP_OK) {
+		ESP_LOGE(TAG, "Failed to get FATFS partition information (%s)", esp_err_to_name(ret));
+		return -1;
+	}
+	ESP_LOGI(TAG, "Partition size: total: %llu, free: %llu", total, free);
 	ESP_LOGI(TAG, "Mount FATFS on %s", mount_point);
 	ESP_LOGI(TAG, "s_wl_handle=%"PRIi32, s_wl_handle);
 	return s_wl_handle;
