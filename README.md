@@ -245,8 +245,8 @@ With this, you can easily build an FTP server.
 __No equipment other than the development board is required.__   
 It works very stably.   
 
-![LilyGo-esp32-s2-1](https://user-images.githubusercontent.com/6020549/107864770-00f96100-6ea3-11eb-8549-6885ae398111.JPG)
-![LilyGo-esp32-s2-2](https://user-images.githubusercontent.com/6020549/127941181-63e48570-88ab-4d5b-8be7-343168079c4a.jpg)
+![Image](https://github.com/user-attachments/assets/8b19a697-40a0-467a-81b2-fe74ff0ca610)
+![Image](https://github.com/user-attachments/assets/63e3ec99-f3f5-430b-b287-95538559f41c)
 
 # Windows ftp client
 I tested these client.   
