@@ -178,10 +178,10 @@ Short File Name on FLASH.
 ![Image](https://github.com/user-attachments/assets/19ce962a-446a-4872-8ebd-d11ccd033423)
 
 Long File Name on SDCARD.    
-![config_long_file_name_support-5](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/7a5912ae-c6e5-4fcd-8466-421d331d38f3)
+![Image](https://github.com/user-attachments/assets/f01bfbcc-5f0e-4b64-9592-d28c4ad3c71e)
 
 Short File Name on SDCARD
-![config_long_file_name_support-6](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/078c40fd-3ed2-44ec-9bf6-cfcc24bf1265)
+![Image](https://github.com/user-attachments/assets/59426d71-0114-4762-9c8d-06433ef19cd3)
 
 # Changing sector size when using wear levelling library   
 By default, 4096-byte sectors are used.   
