@@ -172,7 +172,10 @@ If you use filenames longer than 8 characters, you need to change the values bel
 ![config_long_file_name_support-3](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/6e381627-e6f4-494d-ad40-04a73b49727b)
 
 Long File Name on FLASH.   
-![config_long_file_name_support-4](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/9fad16b1-0be4-4394-9bf0-347cd408152c)
+![Image](https://github.com/user-attachments/assets/ac374ec8-34c2-4f7e-bf61-57265c6ef73b)
+
+Short File Name on FLASH.   
+![Image](https://github.com/user-attachments/assets/19ce962a-446a-4872-8ebd-d11ccd033423)
 
 Long File Name on SDCARD.    
 ![config_long_file_name_support-5](https://github.com/nopnop2002/esp-idf-ftpServer/assets/6020549/7a5912ae-c6e5-4fcd-8466-421d331d38f3)
