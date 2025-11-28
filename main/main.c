@@ -127,7 +127,7 @@ void wifi_init_softap()
 	}
 
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
-	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_AP, &wifi_config));
+	ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
 	ESP_ERROR_CHECK(esp_wifi_start());
 
 	ESP_LOGI(TAG, "wifi_init_softap finished. SSID:%s password:%s", CONFIG_ESP_WIFI_AP_SSID, CONFIG_ESP_WIFI_AP_PASSWORD);
@@ -217,7 +217,7 @@ esp_err_t wifi_init_sta()
 	};
 	ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
 	ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
-	ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config) );
+	ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
 	ESP_ERROR_CHECK(esp_wifi_start() );
 
 	/* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
