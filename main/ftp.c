@@ -681,7 +681,12 @@ static ftp_cmd_index_t ftp_pop_command(char **str) {
 // Get file name from parameter and append to ftp_path
 //-------------------------------------------------------
 static void ftp_get_param_and_open_child(char **bufptr) {
-	ftp_pop_param(bufptr, ftp_scratch_buffer, FTP_MAX_PARAM_SIZE, false, false);
+	do {
+		ftp_pop_param(bufptr, ftp_scratch_buffer, FTP_MAX_PARAM_SIZE, false, false);
+		if (ftp_scratch_buffer[0] == '\0') {
+			return;
+		}
+	} while (ftp_scratch_buffer[0] == '-');
 	ftp_open_child(ftp_path, ftp_scratch_buffer);
 	ftp_data.closechild = true;
 }
