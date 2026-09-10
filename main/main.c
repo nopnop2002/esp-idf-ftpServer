@@ -37,9 +37,6 @@
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 0, 0))
 #define esp_vfs_fat_spiflash_mount esp_vfs_fat_spiflash_mount_rw_wl
 #define esp_vfs_fat_spiflash_unmount esp_vfs_fat_spiflash_unmount_rw_wl
-#define sntp_setoperatingmode esp_sntp_setoperatingmode
-#define sntp_setservername esp_sntp_setservername
-#define sntp_init esp_sntp_init
 #endif
 
 static const char *TAG = "MAIN";
@@ -107,11 +104,7 @@ void wifi_init_softap()
 
 	//ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL));
 	//ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
-	ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT,
-		ESP_EVENT_ANY_ID,
-		&wifi_event_handler,
-		NULL,
-		NULL));
+	ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL, NULL));
 
 	wifi_config_t wifi_config = {
 		.ap = {
@@ -464,12 +457,12 @@ void time_sync_notification_cb(struct timeval *tv)
 static void initialize_sntp(void)
 {
 	ESP_LOGI(TAG, "Initializing SNTP");
-	sntp_setoperatingmode(SNTP_OPMODE_POLL);
-	//sntp_setservername(0, "pool.ntp.org");
+	esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+	//esp_sntp_setservername(0, "pool.ntp.org");
 	ESP_LOGI(TAG, "Your NTP Server is %s", CONFIG_NTP_SERVER);
-	sntp_setservername(0, CONFIG_NTP_SERVER);
+	esp_sntp_setservername(0, CONFIG_NTP_SERVER);
 	sntp_set_time_sync_notification_cb(time_sync_notification_cb);
-	sntp_init();
+	esp_sntp_init();
 }
 
 static esp_err_t obtain_time(void)
@@ -548,14 +541,12 @@ void app_main(void)
 
 #if CONFIG_LITTLEFS 
 	char *partition_label = "storage";
-	ret = mountLITTLEFS(partition_label, MOUNT_POINT);
-	if (ret != ESP_OK) return;
+	ESP_ERROR_CHECK(mountLITTLEFS(partition_label, MOUNT_POINT));
 #endif
 
 #if CONFIG_SPI_SDCARD || CONFIG_MMC_SDCARD
 	sdmmc_card_t card;
-	ret = mountSDCARD(MOUNT_POINT, &card);
-	if (ret != ESP_OK) return;
+	ESP_ERROR_CHECK(mountSDCARD(MOUNT_POINT, &card));
 #endif 
 
 	// Create FTP server task

@@ -2,15 +2,6 @@ menu "FTP Server Configuration"
 
 	menu "File System Selection"
 
-		config GPIO_RANGE_MAX
-			int
-			default 33 if IDF_TARGET_ESP32
-			default 46 if IDF_TARGET_ESP32S2
-			default 48 if IDF_TARGET_ESP32S3
-			default 18 if IDF_TARGET_ESP32C2
-			default 19 if IDF_TARGET_ESP32C3
-			default 30 if IDF_TARGET_ESP32C6
-
 		choice FILE_SYSTEM
 			prompt "File System Selection"
 			default FATFS
@@ -92,7 +83,7 @@ menu "FTP Server Configuration"
 		config SDSPI_MOSI
 			depends on SPI_SDCARD
 			int "MOSI GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_OUT_RANGE_MAX
 			default 23 if IDF_TARGET_ESP32
 			default 35 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  1 # C3 and others
@@ -102,7 +93,7 @@ menu "FTP Server Configuration"
 		config SDSPI_MISO
 			depends on SPI_SDCARD
 			int "MISO GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_IN_RANGE_MAX
 			default 19 if IDF_TARGET_ESP32
 			default 37 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  3 # C3 and others
@@ -112,7 +103,7 @@ menu "FTP Server Configuration"
 		config SDSPI_CLK
 			depends on SPI_SDCARD
 			int "CLK GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_OUT_RANGE_MAX
 			default 18 if IDF_TARGET_ESP32
 			default 36 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  2 # C3 and others
@@ -122,7 +113,7 @@ menu "FTP Server Configuration"
 		config SDSPI_CS
 			depends on SPI_SDCARD
 			int "CS GPIO number"
-			range 0 GPIO_RANGE_MAX
+			range 0 SOC_GPIO_OUT_RANGE_MAX
 			default 14 if IDF_TARGET_ESP32
 			default 34 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
 			default  4 # C3 and others
@@ -132,7 +123,7 @@ menu "FTP Server Configuration"
 		config SDSPI_POWER
 			depends on SPI_SDCARD
 			int "POWER GPIO number"
-			range -1 GPIO_RANGE_MAX
+			range -1 SOC_GPIO_OUT_RANGE_MAX
 			default -1
 			help
 				GPIO number (IOxx) to SPI POWER.
@@ -209,7 +200,7 @@ menu "FTP Server Configuration"
 		config STATIC_IP
 			depends on ST_MODE
 			bool "Enable Static IP Address"
-			default false
+			default n
 			help
 				Enable Static IP Address.
 
